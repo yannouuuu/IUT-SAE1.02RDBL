@@ -1,0 +1,13 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Lancer CookiesLand",
+            "request": "launch",
+            "mainClass": "ijava2.clitools.MainCLI",
+            "args": "execute Main",
+            "cwd": "${workspaceFolder}/classes",
+            "projectName": "IUT-SAE1.02RDBL",
+        }
+    ]
+}

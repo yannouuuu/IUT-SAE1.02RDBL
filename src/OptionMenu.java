@@ -1,0 +1,7 @@
+enum OptionMenu {
+	NOUVELLE_PARTIE,
+	CHARGER,
+	REGLES,
+	RESET,
+	QUITTER
+}

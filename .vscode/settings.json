@@ -1,0 +1,11 @@
+{
+    "java.project.sourcePaths": ["src"],
+    "java.project.outputPath": "classes",
+    "java.project.referencedLibraries": [
+        "lib/**/*.jar",
+        "${userHome}/.ijava2/ijava.jar"
+    ],
+    "files.exclude": {
+        "**/*.class": true
+    }
+}
