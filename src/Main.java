@@ -8,7 +8,7 @@ class Main extends Program {
 	final int ARGENT_DEPART = 2000000;
 	final int GAIN_DEPART = 0;
 	final int NB_COLONNES_SAVE = 9; // nombre de colonnes utilisées dans le fichier de sauvegarde CSV
-
+	
 	String ressourcesPrefix = "resources/";
 	String questionsCsv;
 	String cookiesCsv;
