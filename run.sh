@@ -20,7 +20,7 @@ if [ -z "$JAVA_CMD" ] || [ -z "$JAVAC_CMD" ]; then
 fi
 
 get_major_version() {
-	"$1" -version 2>&1 | head -n 1 | sed -E 's/.*"([0-9]+).*"/\1/'
+	"$1" -version 2>&1 | head -n 1 | tr -d '"' | grep -oE '[0-9]+\.[0-9]+' | head -1 | cut -d. -f1
 }
 
 JAVA_VER="$(get_major_version "$JAVA_CMD")"
