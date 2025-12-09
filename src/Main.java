@@ -5,7 +5,7 @@ class Main extends Program {
 
 	final String CLEAR_SEQUENCE = "\033[2J:";
 	final char CSV_SEPARATOR = ',';
-	final int ARGENT_DEPART = 2000000;
+	final int ARGENT_DEPART = 200;
 	final int GAIN_DEPART = 0;
 	final int NB_COLONNES_SAVE = 9; // nombre de colonnes utilisées dans le fichier de sauvegarde CSV
 	
@@ -275,7 +275,7 @@ class Main extends Program {
 		clearTerminal();
 		afficherLogo();
 		println("_______________________");
-		println("Jour " + partie.jour + " - Argent : " + partie.argent + " euros - Gain de la journee : " + partie.gainJour + " euros");
+		println("Jour " + partie.jour + " - Argent : " + partie.argent + " euros - Gain de la journee : " + partie.gainJour + " euros - Nombre de cookies : " + CookieStat.quantite);
 		println("_______________________");
 		
 		CookieStat c = partie.cookie;
@@ -284,6 +284,7 @@ class Main extends Program {
 			println(" - Matiere prem. : " + c.matiere);
 			println(" - Prix de vente : " + c.prix);
 			println(" - Taxe : " + c.taxe + "%");
+			println(" - Quantité : " + CookieStat.quantite)
 		}
 		println("_______________________");
 		

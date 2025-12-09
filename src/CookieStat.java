@@ -4,4 +4,5 @@ class CookieStat {
 	int matiere;
 	int prix;
 	int taxe;
+	int quantite ;
 }
