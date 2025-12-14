@@ -65,7 +65,7 @@ class Main extends Program {
 			println("Impossible d'initialiser la partie (aucun cookie disponible).");
 			attendreValidationUtilisateur();
 		} else {
-			boucleJeu(partie, questions, cookies);
+			boucleJeu(partie, questions, partie.cookie);
 		}
 	}
 
