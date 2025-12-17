@@ -27,7 +27,7 @@ class Main extends Program {
 			ressourcesPrefix = "../resources/";
 		}
 		questionsCsv = ressourcesPrefix + "questions.csv";
-		cookiesCsv = ressourcesPrefix + "cookies.csv";
+		cookiesCsv = ressourcesPrefix + "cookies.csv"
 		savesCsv = ressourcesPrefix + "saves.csv";
 		logoAscii = ressourcesPrefix + "cookieslandascii.txt";
 	}
@@ -36,7 +36,7 @@ class Main extends Program {
 	void boucleMenuPrincipal() {
 		boolean quitter = false;
 		while (!quitter) {
-			clearTerminal();
+			effacerTerminal();
 			afficherLogo();
 			afficherMenuPrincipal();
 			int choix = lireEntierDansIntervalle(1, 5);
@@ -71,7 +71,7 @@ class Main extends Program {
 
 	// Affiche les regles du jeu a l'ecran
 	void afficherRegles() {
-		clearTerminal();
+		effacerTerminal();
 		println("=== REGLES DE COOKIESLAND ===");
 		println("1. Repondez aux questions d'economie-gestion (4 choix possibles).");
 		println("2. Une bonne reponse debloque un bonus (matiere, prix ou taxe).");
@@ -119,9 +119,9 @@ class Main extends Program {
 			afficherEcranTour(partie, question, cookiestat);
 	
 			String reponse = demanderReponse();
-			if (equals(reponse, "Q")) {
+			if (equals(reponse, "Q")){
 				jeuEnCours = false;
-			} else if (equals(reponse, "S")) {
+			} else if (equals(reponse, "S")){
 				sauvegarderPartie(partie);
 				jeuEnCours = false;
 			} else {
@@ -138,7 +138,7 @@ class Main extends Program {
 				calculerFinDeTour(partie);
 				
 				if (partie.argent < 0) {
-					clearTerminal();
+					effacerTerminal();
 					println("Vous avez fait faillite !");
 					jeuEnCours = false;
 					attendreValidationUtilisateur();
@@ -167,7 +167,7 @@ class Main extends Program {
 		}
 		
 		if (indexTrouve != -1) {
-			data = csvToTable(csv);
+			data = csvVersTableau(csv);
 			remplirLigneSauvegarde(data, indexTrouve, nomSauvegarde, p);
 		} else {
 			data = new String[existingRows + 1][NB_COLONNES_SAVE];
@@ -223,7 +223,7 @@ class Main extends Program {
 	}
 	
 	// Convertit un fichier CSV en tableau de chaines
-	String[][] csvToTable(CSVFile source) {
+	String[][] csvVersTableau(CSVFile source) {
 		int rows = rowCount(source);
 		String[][] dest = new String[rows][NB_COLONNES_SAVE];
 		copierDonnees(source, dest);
@@ -274,7 +274,7 @@ class Main extends Program {
 
 	// Affiche les informations du tour courant (jour, argent, stats, question)
 	void afficherEcranTour(Partie partie, Question question ,CookieStat cookieStat) {
-		clearTerminal();
+		effacerTerminal();
 		afficherLogo();
 		println("_______________________");
 		println("Jour " + partie.jour + " - Argent : " + partie.argent + " euros - Gain de la journee : " + partie.gainJour + " euros - Nombre de cookies : " + cookieStat.quantite);
@@ -344,7 +344,7 @@ class Main extends Program {
 
 	// Affiche si la reponse etait correcte ou non
 	void afficherEcranResultat(boolean succes) {
-		clearTerminal();
+		effacerTerminal();
 		if (succes) {
 			println("          BONNE REPONSE !!!!!!!!          ");
 		} else {
@@ -356,7 +356,7 @@ class Main extends Program {
 
 	// Applique un bonus choisi par le joueur
 	void traiterBonus(Partie p) {
-		clearTerminal();
+		effacerTerminal();
 		println("Que souhaitez vous ameliorer ??");
 		println(" A. Matiere premiere (Cout -10%)");
 		println(" B. Prix de vente (Prix +10%)");
@@ -392,7 +392,7 @@ class Main extends Program {
 
 	// Applique un malus aleatoire au joueur
 	void traiterMalus(Partie p) {
-		clearTerminal();
+		effacerTerminal();
 		int r = (int)(random() * 3);
 		println("Votre malus est :");
 		CookieStat c = p.cookie;
@@ -558,8 +558,14 @@ class Main extends Program {
 	}
 
 	// Verifie si un caractere est un chiffre
+	//return equals(caractere, "0") || equals(caractere, "1") || equals(caractere, "2") || equals(caractere, "3") || equals(caractere, "4") || equals(caractere, "5") || equals(caractere, "6") || equals(caractere, "7") || equals(caractere, "8") || equals(caractere, "9");
 	boolean estChiffre(String caractere) {
-		return equals(caractere, "0") || equals(caractere, "1") || equals(caractere, "2") || equals(caractere, "3") || equals(caractere, "4") || equals(caractere, "5") || equals(caractere, "6") || equals(caractere, "7") || equals(caractere, "8") || equals(caractere, "9");
+		if(length(caractere) <=1 and length(caractere)>0){
+			if(caractere >"9" and caractere < "0"){
+				return true;
+			}
+		}
+		return false;
 	}
 
 	// Convertit une chaine de caracteres en entier
@@ -599,7 +605,7 @@ class Main extends Program {
 	}
 
 	// Efface le contenu du terminal
-	void clearTerminal() {
+	void effacerTerminal() {
 		println(CLEAR_SEQUENCE);
 	}
 
