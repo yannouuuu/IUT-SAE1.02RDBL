@@ -5,10 +5,10 @@ class Main extends Program {
 
 	final String CLEAR_SEQUENCE = "\033[2J:";
 	final char CSV_SEPARATOR = ',';
-	final int ARGENT_DEPART = 2000000;
+	final int ARGENT_DEPART = 200;
 	final int GAIN_DEPART = 0;
-	final int NB_COLONNES_SAVE = 9; // nombre de colonnes utilisées dans le fichier de sauvegarde CSV
-
+	final int NB_COLONNES_SAVE = 10; // nombre de colonnes utilisées dans le fichier de sauvegarde CSV
+	
 	String ressourcesPrefix = "resources/";
 	String questionsCsv;
 	String cookiesCsv;
@@ -57,15 +57,15 @@ class Main extends Program {
 	}
 
 	// Initialise et lance une nouvelle partie avec les donnees par defaut
-	void lancerNouvellePartie() {
+	void lancerNouvellePartie(){
 		CookieStat[] cookies = chargerCookies();
 		Question[] questions = chargerQuestions();
 		Partie partie = nouvellePartieInitiale(cookies);
-		if (partie.cookie == null) {
+		if (partie.cookie == null){
 			println("Impossible d'initialiser la partie (aucun cookie disponible).");
 			attendreValidationUtilisateur();
 		} else {
-			boucleJeu(partie, questions);
+			boucleJeu(partie, questions, partie.cookie);
 		}
 	}
 
@@ -112,12 +112,12 @@ class Main extends Program {
 	}
 
 	// Boucle principale du jeu : gere les tours, les questions et les evenements
-	void boucleJeu(Partie partie, Question[] questions) {
+	void boucleJeu(Partie partie, Question[] questions, CookieStat cookiestat){
 		boolean jeuEnCours = true;
 		while (jeuEnCours) {
 			Question question = questions[(int) (random() * length(questions))];
-			afficherEcranTour(partie, question);
-			
+			afficherEcranTour(partie, question, cookiestat);
+	
 			String reponse = demanderReponse();
 			if (equals(reponse, "Q")) {
 				jeuEnCours = false;
@@ -254,28 +254,30 @@ class Main extends Program {
 			p.gainJour = entierDepuisTexte(getCell(csv, index, 3));
 			
 			String cookieId = getCell(csv, index, 4);
+			CookieStat c = new CookieStat();
 			if (!equals(cookieId, "NULL")) {
-				CookieStat c = new CookieStat();
 				c.id = cookieId;
 				c.nom = getCell(csv, index, 5);
 				c.matiere = entierDepuisTexte(getCell(csv, index, 6));
 				c.prix = entierDepuisTexte(getCell(csv, index, 7));
 				c.taxe = entierDepuisTexte(getCell(csv, index, 8));
+				c.quantite = entierDepuisTexte(getCell(csv, index, 9));
 				p.cookie = c;
+
 			} else {
 				p.cookie = null;
 			}			
 			Question[] questions = chargerQuestions();
-			boucleJeu(p, questions);
+			boucleJeu(p, questions, c);
 		}
 	}
 
 	// Affiche les informations du tour courant (jour, argent, stats, question)
-	void afficherEcranTour(Partie partie, Question question) {
+	void afficherEcranTour(Partie partie, Question question ,CookieStat cookieStat) {
 		clearTerminal();
 		afficherLogo();
 		println("_______________________");
-		println("Jour " + partie.jour + " - Argent : " + partie.argent + " euros - Gain de la journee : " + partie.gainJour + " euros");
+		println("Jour " + partie.jour + " - Argent : " + partie.argent + " euros - Gain de la journee : " + partie.gainJour + " euros - Nombre de cookies : " + cookieStat.quantite);
 		println("_______________________");
 		
 		CookieStat c = partie.cookie;
@@ -284,6 +286,7 @@ class Main extends Program {
 			println(" - Matiere prem. : " + c.matiere);
 			println(" - Prix de vente : " + c.prix);
 			println(" - Taxe : " + c.taxe + "%");
+			println(" - Quantité : " + c.quantite);
 		}
 		println("_______________________");
 		
@@ -426,6 +429,7 @@ class Main extends Program {
 		if (lignes <= 1) {
 			return new CookieStat[0];
 		}
+		
 		CookieStat[] cookies = new CookieStat[lignes - 1];
 		int idx = 1;
 		int pos = 0;
@@ -445,6 +449,7 @@ class Main extends Program {
 		cookie.matiere = entierDepuisTexte(getCell(table, ligne, 2));
 		cookie.prix = entierDepuisTexte(getCell(table, ligne, 3));
 		cookie.taxe = entierDepuisTexte(getCell(table, ligne, 4));
+		cookie.quantite = entierDepuisTexte(getCell(table, ligne, 5));
 		return cookie;
 	}
 
@@ -506,6 +511,7 @@ class Main extends Program {
 		copie.matiere = source.matiere;
 		copie.prix = source.prix;
 		copie.taxe = source.taxe;
+		copie.quantite = source.quantite;
 		return copie;
 	}
 

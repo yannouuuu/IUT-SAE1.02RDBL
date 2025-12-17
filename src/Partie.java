@@ -3,4 +3,5 @@ class Partie {
 	int argent;
 	int gainJour;
 	CookieStat cookie;
+	
 }
