@@ -119,9 +119,9 @@ class Main extends Program {
 			afficherEcranTour(partie, question, cookiestat);
 	
 			String reponse = demanderReponse();
-			if (equals(reponse, "Q")) {
+			if (equals(reponse, "Q")){
 				jeuEnCours = false;
-			} else if (equals(reponse, "S")) {
+			} else if (equals(reponse, "S")){
 				sauvegarderPartie(partie);
 				jeuEnCours = false;
 			} else {
@@ -558,8 +558,14 @@ class Main extends Program {
 	}
 
 	// Verifie si un caractere est un chiffre
+	//return equals(caractere, "0") || equals(caractere, "1") || equals(caractere, "2") || equals(caractere, "3") || equals(caractere, "4") || equals(caractere, "5") || equals(caractere, "6") || equals(caractere, "7") || equals(caractere, "8") || equals(caractere, "9");
 	boolean estChiffre(String caractere) {
-		return equals(caractere, "0") || equals(caractere, "1") || equals(caractere, "2") || equals(caractere, "3") || equals(caractere, "4") || equals(caractere, "5") || equals(caractere, "6") || equals(caractere, "7") || equals(caractere, "8") || equals(caractere, "9");
+		if(length(caractere) <=1 and length(caractere)>0){
+			if(caractere >"9" and caractere < "0"){
+				return true;
+			}
+		}
+		return false;
 	}
 
 	// Convertit une chaine de caracteres en entier
