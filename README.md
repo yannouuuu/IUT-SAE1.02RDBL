@@ -52,14 +52,14 @@ cd IUT-SAE1.02RDBL/
 3. Compilation et Exécution
 ```bash
 # Exécution sur Linux/MacOS
-./compilation_run.sh
+./run.sh
 
 # Exécution sur Windows
-./compilation_run.bat
+./run.bat
 ```
 
 ## Guide d'utilisation
-1. *Lancer le jeu* : Exécutez la commande ```./compilation_run.sh``` après compilation.
+1. *Lancer le jeu* : Exécutez la commande ```./run.sh``` après compilation.
 2. *Menu principal* : Choisissez entre une nouvelle partie, charger une sauvegarde ou quitter.
 3. *Tour de jeu* : Prenez des décisions via les options proposées.
 
