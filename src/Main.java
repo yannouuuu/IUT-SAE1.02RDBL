@@ -3,7 +3,7 @@ import extensions.CSVFile;
 
 class Main extends Program {
 
-	final String CLEAR_SEQUENCE = "\033[2J:";
+	final String CLEAR_SEQUENCE = "\033[H\033[2J";
 	final char CSV_SEPARATOR = ',';
 	final int ARGENT_DEPART = 200;
 	final int GAIN_DEPART = 0;
