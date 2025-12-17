@@ -647,3 +647,4 @@ class Main extends Program {
 		return OptionMenu.QUITTER;
 	}
 }
+
