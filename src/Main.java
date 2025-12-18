@@ -21,16 +21,26 @@ class Main extends Program {
 		boucleMenuPrincipal();
 	}
 
+
+
 	// Configure les chemins vers les fichiers de ressources (CSV, texte)
 	void initialiserCheminsRessources() {
 		if (!repertoirePresentDansCourant("resources")) {
 			ressourcesPrefix = "../resources/";
 		}
 		questionsCsv = ressourcesPrefix + "questions.csv";
-		cookiesCsv = ressourcesPrefix + "cookies.csv"
+		cookiesCsv = ressourcesPrefix + "cookies.csv";
 		savesCsv = ressourcesPrefix + "saves.csv";
 		logoAscii = ressourcesPrefix + "cookieslandascii.txt";
 	}
+
+
+
+/* 
+============================================================================
+=====================AFFICHAGE=============================
+=========================================
+ */
 
 	// Gere l'affichage et la navigation dans le menu principal
 	void boucleMenuPrincipal() {
@@ -56,18 +66,6 @@ class Main extends Program {
 		}
 	}
 
-	// Initialise et lance une nouvelle partie avec les donnees par defaut
-	void lancerNouvellePartie(){
-		CookieStat[] cookies = chargerCookies();
-		Question[] questions = chargerQuestions();
-		Partie partie = nouvellePartieInitiale(cookies);
-		if (partie.cookie == null){
-			println("Impossible d'initialiser la partie (aucun cookie disponible).");
-			attendreValidationUtilisateur();
-		} else {
-			boucleJeu(partie, questions, partie.cookie);
-		}
-	}
 
 	// Affiche les regles du jeu a l'ecran
 	void afficherRegles() {
@@ -111,6 +109,25 @@ class Main extends Program {
 		}
 	}
 
+/*
+==========================================================================================================================================
+=================================================FONCTIONS PRINCIPALE DU FONCTIONNEMENT====================================
+===========================================================================================================================================================
+*/ 
+
+	// Initialise et lance une nouvelle partie avec les donnees par defaut
+	void lancerNouvellePartie(){
+		CookieStat[] cookies = chargerCookies();
+		Question[] questions = chargerQuestions();
+		Partie partie = nouvellePartieInitiale(cookies);
+		if (partie.cookie == null){
+			println("Impossible d'initialiser la partie (aucun cookie disponible).");
+			attendreValidationUtilisateur();
+		} else {
+			boucleJeu(partie, questions, partie.cookie);
+		}
+	}
+	
 	// Boucle principale du jeu : gere les tours, les questions et les evenements
 	void boucleJeu(Partie partie, Question[] questions, CookieStat cookiestat){
 		boolean jeuEnCours = true;
@@ -148,6 +165,12 @@ class Main extends Program {
 			}
 		}
 	}
+
+/* 
+======================================================================================================================================================================
+====================================GESTION DES SAUVEGARDES==================================================================================
+=======================================================================================================================================================
+*/ 
 
 	// Sauvegarde l'etat actuel de la partie dans le fichier CSV
 	void sauvegarderPartie(Partie p) {
@@ -272,6 +295,9 @@ class Main extends Program {
 		}
 	}
 
+/* ======== AFFICHAGE==============*/
+
+
 	// Affiche les informations du tour courant (jour, argent, stats, question)
 	void afficherEcranTour(Partie partie, Question question ,CookieStat cookieStat) {
 		effacerTerminal();
@@ -309,6 +335,9 @@ class Main extends Program {
 		return majuscule(saisie);
 	}
 
+
+/* =====================CONTROLE DE SAISIE===================*/
+
 	// Verifie si la saisie correspond a une reponse valide (A, B, C ou D)
 	boolean estReponseValide(String s) {
 		boolean valide = false;
@@ -342,6 +371,8 @@ class Main extends Program {
 		return res;
 	}
 
+/* ====AFFICHAGE======*/
+
 	// Affiche si la reponse etait correcte ou non
 	void afficherEcranResultat(boolean succes) {
 		effacerTerminal();
@@ -353,6 +384,8 @@ class Main extends Program {
 		println("");
 		attendreValidationUtilisateur();
 	}
+
+/* FONCTION PRINCIPALE=====*/
 
 	// Applique un bonus choisi par le joueur
 	void traiterBonus(Partie p) {
@@ -379,6 +412,8 @@ class Main extends Program {
 		attendreValidationUtilisateur();
 	}
 
+/*===CONTROLE DE SAISIE===*/
+
 	// Demande a l'utilisateur de choisir entre A, B ou C
 	String demanderReponseABC() {
 		print("(Choisissez A/B/C) > ");
@@ -389,6 +424,8 @@ class Main extends Program {
 		}
 		return majuscule(s);
 	}
+
+/* 	FONCTION PRINCIPALE====*/
 
 	// Applique un malus aleatoire au joueur
 	void traiterMalus(Partie p) {
@@ -421,6 +458,8 @@ class Main extends Program {
 		p.gainJour = gainNet;
 		p.argent = p.argent + gainNet;
 	}
+
+/* ====SAUVEGARDE====*/
 
 	// Charge la liste des cookies depuis le fichier CSV
 	CookieStat[] chargerCookies() {
@@ -515,6 +554,9 @@ class Main extends Program {
 		return copie;
 	}
 
+
+/* ========== CONTROLE DE SAISIE =============*/
+
 	// Lit un entier saisi par l'utilisateur en verifiant qu'il est dans l'intervalle
 	int lireEntierDansIntervalle(int min, int max) {
 		boolean valide = false;
@@ -560,8 +602,8 @@ class Main extends Program {
 	// Verifie si un caractere est un chiffre
 	//return equals(caractere, "0") || equals(caractere, "1") || equals(caractere, "2") || equals(caractere, "3") || equals(caractere, "4") || equals(caractere, "5") || equals(caractere, "6") || equals(caractere, "7") || equals(caractere, "8") || equals(caractere, "9");
 	boolean estChiffre(String caractere) {
-		if(length(caractere) <=1 and length(caractere)>0){
-			if(caractere >"9" and caractere < "0"){
+		if(length(caractere) <= 1 && length(caractere) > 0){
+			if(caractere <="9" && caractere >= "0"){
 				return true;
 			}
 		}
@@ -597,6 +639,10 @@ class Main extends Program {
 		}
 		return 9;
 	}
+
+
+
+/* ====== AFFICHAGE=====*/
 
 	// Met le programme en pause jusqu'a ce que l'utilisateur appuie sur Entree
 	void attendreValidationUtilisateur() {
@@ -636,6 +682,8 @@ class Main extends Program {
 		}
 		attendreValidationUtilisateur();
 	}
+
+/* ======AUTRE===== */
 
 	Difficulte niveauDepuisTexte(String valeur) {
 		if (equals(valeur, "FACILE")) {
