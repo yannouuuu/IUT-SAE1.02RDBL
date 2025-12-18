@@ -621,7 +621,7 @@ class Main extends Program {
 		}
 		return false;
 	}
-
+	
 	// Reinitialise le fichier de sauvegardes (efface tout)
 	void initialiserSauvegardes() {
 		println("ATTENTION : Cela va effacer toutes les sauvegardes existantes.");

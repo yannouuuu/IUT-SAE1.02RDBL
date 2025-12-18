@@ -4,7 +4,6 @@ set -euo pipefail
 ROOT_DIR="$(cd "$(dirname "$0")" && pwd)"
 SRC_DIR="$ROOT_DIR/src"
 
-# Préférence : JAVA_HOME si défini, sinon fallback openjdk-17, sinon PATH.
 JAVA_HOME="${JAVA_HOME:-${JAVA_HOME_FALLBACK:-/usr/lib/jvm/java-17-openjdk-amd64}}"
 JAVA_BIN="${JAVA_HOME:+$JAVA_HOME/bin}"
 JAVA_CMD="${JAVA_BIN:+$JAVA_BIN/java}"
