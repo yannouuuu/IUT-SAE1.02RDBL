@@ -600,14 +600,14 @@ class Main extends Program {
 	}
 
 	// Verifie si un caractere est un chiffre
-	//return equals(caractere, "0") || equals(caractere, "1") || equals(caractere, "2") || equals(caractere, "3") || equals(caractere, "4") || equals(caractere, "5") || equals(caractere, "6") || equals(caractere, "7") || equals(caractere, "8") || equals(caractere, "9");
 	boolean estChiffre(String caractere) {
-		if(length(caractere) <= 1 && length(caractere) > 0){
+		return equals(caractere, "0") || equals(caractere, "1") || equals(caractere, "2") || equals(caractere, "3") || equals(caractere, "4") || equals(caractere, "5") || equals(caractere, "6") || equals(caractere, "7") || equals(caractere, "8") || equals(caractere, "9");
+		/*if(length(caractere) <= 1 && length(caractere) > 0){
 			if(caractere <="9" && caractere >= "0"){
 				return true;
 			}
 		}
-		return false;
+		return false;*/
 	}
 
 	// Convertit une chaine de caracteres en entier
