@@ -35,12 +35,8 @@ class Main extends Program {
 	}
 
 
-
-/* 
-============================================================================
-=====================AFFICHAGE=============================
-=========================================
- */
+	// ============================== AFFICHAGE ==============================
+	//region AFFICHAGE
 
 	// Gere l'affichage et la navigation dans le menu principal
 	void boucleMenuPrincipal() {
@@ -109,11 +105,10 @@ class Main extends Program {
 		}
 	}
 
-/*
-==========================================================================================================================================
-=================================================FONCTIONS PRINCIPALE DU FONCTIONNEMENT====================================
-===========================================================================================================================================================
-*/ 
+	//endregion
+
+	// ============================== FONCTIONS PRINCIPALE DU FONCTIONNEMENT ==============================
+	//region FONCTIONS PRINCIPALE DU FONCTIONNEMENT 
 
 	// Initialise et lance une nouvelle partie avec les donnees par defaut
 	void lancerNouvellePartie(){
@@ -166,11 +161,10 @@ class Main extends Program {
 		}
 	}
 
-/* 
-======================================================================================================================================================================
-====================================GESTION DES SAUVEGARDES==================================================================================
-=======================================================================================================================================================
-*/ 
+	//endregion
+
+	// ============================== GESTION DES SAUVEGARDES ==============================
+	//region GESTION DES SAUVEGARDES 
 
 	// Sauvegarde l'etat actuel de la partie dans le fichier CSV
 	void sauvegarderPartie(Partie p) {
@@ -295,7 +289,10 @@ class Main extends Program {
 		}
 	}
 
-/* ======== AFFICHAGE==============*/
+	//endregion
+
+	// ============================== AFFICHAGE ==============================
+	//region AFFICHAGE
 
 
 	// Affiche les informations du tour courant (jour, argent, stats, question)
@@ -336,7 +333,10 @@ class Main extends Program {
 	}
 
 
-/* =====================CONTROLE DE SAISIE===================*/
+	//endregion
+
+	// ============================== CONTROLE DE SAISIE ==============================
+	//region CONTROLE DE SAISIE
 
 	// Verifie si la saisie correspond a une reponse valide (A, B, C ou D)
 	boolean estReponseValide(String s) {
@@ -371,7 +371,10 @@ class Main extends Program {
 		return res;
 	}
 
-/* ====AFFICHAGE======*/
+	//endregion
+
+	// ============================== AFFICHAGE ==============================
+	//region AFFICHAGE
 
 	// Affiche si la reponse etait correcte ou non
 	void afficherEcranResultat(boolean succes) {
@@ -385,7 +388,10 @@ class Main extends Program {
 		attendreValidationUtilisateur();
 	}
 
-/* FONCTION PRINCIPALE=====*/
+	//endregion
+
+	// ============================== FONCTION PRINCIPALE ==============================
+	//region FONCTION PRINCIPALE
 
 	// Applique un bonus choisi par le joueur
 	void traiterBonus(Partie p) {
@@ -412,7 +418,10 @@ class Main extends Program {
 		attendreValidationUtilisateur();
 	}
 
-/*===CONTROLE DE SAISIE===*/
+	//endregion
+
+	// ============================== CONTROLE DE SAISIE ==============================
+	//region CONTROLE DE SAISIE
 
 	// Demande a l'utilisateur de choisir entre A, B ou C
 	String demanderReponseABC() {
@@ -425,7 +434,10 @@ class Main extends Program {
 		return majuscule(s);
 	}
 
-/* 	FONCTION PRINCIPALE====*/
+	//endregion
+
+	// ============================== FONCTION PRINCIPALE ==============================
+	//region FONCTION PRINCIPALE
 
 	// Applique un malus aleatoire au joueur
 	void traiterMalus(Partie p) {
@@ -459,7 +471,10 @@ class Main extends Program {
 		p.argent = p.argent + gainNet;
 	}
 
-/* ====SAUVEGARDE====*/
+	//endregion
+
+	// ============================== SAUVEGARDE ==============================
+	//region SAUVEGARDE
 
 	// Charge la liste des cookies depuis le fichier CSV
 	CookieStat[] chargerCookies() {
@@ -555,7 +570,10 @@ class Main extends Program {
 	}
 
 
-/* ========== CONTROLE DE SAISIE =============*/
+	//endregion
+
+	// ============================== CONTROLE DE SAISIE ==============================
+	//region CONTROLE DE SAISIE
 
 	// Lit un entier saisi par l'utilisateur en verifiant qu'il est dans l'intervalle
 	int lireEntierDansIntervalle(int min, int max) {
@@ -600,21 +618,15 @@ class Main extends Program {
 	}
 
 	// Verifie si un caractere est un chiffre
-<<<<<<< HEAD
-	boolean estChiffre(String caractere) {
-		return equals(caractere, "0") || equals(caractere, "1") || equals(caractere, "2") || equals(caractere, "3") || equals(caractere, "4") || equals(caractere, "5") || equals(caractere, "6") || equals(caractere, "7") || equals(caractere, "8") || equals(caractere, "9");
-		/*if(length(caractere) <= 1 && length(caractere) > 0){
-			if(caractere <="9" && caractere >= "0"){
-=======
 	//return equals(caractere, "0") || equals(caractere, "1") || equals(caractere, "2") || equals(caractere, "3") || equals(caractere, "4") || equals(caractere, "5") || equals(caractere, "6") || equals(caractere, "7") || equals(caractere, "8") || equals(caractere, "9");
 	boolean estChiffre(String caractere){
-		if(length(caractere) <=1 and length(caractere)>0){
-			if(caractere >'9' and caractere < '0'){
->>>>>>> 0ca38ffe0938dc1da64d4174427212d166a9b302
+		if(length(caractere) == 1){
+			char c = charAt(caractere, 0);
+			if(c >= '0' && c <= '9'){
 				return true;
 			}
 		}
-		return false;*/
+		return false;
 	}
 
 	// Convertit une chaine de caracteres en entier
@@ -648,8 +660,10 @@ class Main extends Program {
 	}
 
 
+	//endregion
 
-/* ====== AFFICHAGE=====*/
+	// ============================== AFFICHAGE ==============================
+	//region AFFICHAGE
 
 	// Met le programme en pause jusqu'a ce que l'utilisateur appuie sur Entree
 	void attendreValidationUtilisateur() {
@@ -690,7 +704,10 @@ class Main extends Program {
 		attendreValidationUtilisateur();
 	}
 
-/* ======AUTRE===== */
+	//endregion
+
+	// ============================== AUTRE ==============================
+	//region AUTRE
 
 	Difficulte niveauDepuisTexte(String valeur) {
 		if (equals(valeur, "FACILE")) {
@@ -713,5 +730,6 @@ class Main extends Program {
 		}
 		return OptionMenu.QUITTER;
 	}
+	//endregion
 }
 
