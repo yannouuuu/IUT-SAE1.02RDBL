@@ -209,6 +209,7 @@ class Main extends Program {
 		data[ligne][1] = "" + p.jour;
 		data[ligne][2] = "" + p.argent;
 		data[ligne][3] = "" + p.gainJour;
+		data[ligne][4] = "" + p.quantite;
 		CookieStat c = p.cookie;
 		if (c != null) {
 			data[ligne][4] = c.id;
@@ -216,12 +217,14 @@ class Main extends Program {
 			data[ligne][6] = "" + c.matiere;
 			data[ligne][7] = "" + c.prix;
 			data[ligne][8] = "" + c.taxe;
+			data[ligne][9] = "" + c.quantite;
 		} else {
 			data[ligne][4] = "NULL";
 			data[ligne][5] = "";
 			data[ligne][6] = "0";
 			data[ligne][7] = "0";
 			data[ligne][8] = "0";
+			data[ligne][9] = "0";
 		}
 	}
 
@@ -269,6 +272,7 @@ class Main extends Program {
 			p.jour = entierDepuisTexte(getCell(csv, index, 1));
 			p.argent = entierDepuisTexte(getCell(csv, index, 2));
 			p.gainJour = entierDepuisTexte(getCell(csv, index, 3));
+			p.quantite = entierDepuisTexte(getCell(csv, index, 4));
 			
 			String cookieId = getCell(csv, index, 4);
 			CookieStat c = new CookieStat();
@@ -415,6 +419,7 @@ class Main extends Program {
 			if (c.taxe < 0) c.taxe = 0;
 			println("Taxes reduites !");
 		}
+		c.quantite = c.quantite + 15;
 		attendreValidationUtilisateur();
 	}
 
@@ -460,7 +465,7 @@ class Main extends Program {
 
 	// Calcule les gains financiers a la fin du tour
 	void calculerFinDeTour(Partie p) {
-		int volume = 1000;
+		int volume = c.quantite;
 		CookieStat c = p.cookie;
 		int margeUnitaire = c.prix - c.matiere;
 		int gainBrut = margeUnitaire * volume;
@@ -546,6 +551,7 @@ class Main extends Program {
 		partie.jour = 1;
 		partie.argent = ARGENT_DEPART;
 		partie.gainJour = GAIN_DEPART;
+		partie.quantite = 5;
 		if (length(cookies) > 0) {
 			partie.cookie = copierCookie(cookies[0]);
 		} else {
