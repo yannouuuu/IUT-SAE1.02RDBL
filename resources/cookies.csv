@@ -1,4 +1,4 @@
 id,nom,matiere,prix,taxe,quantite
-C001,Cookie Classique,50,15,45,10
+C001,Cookie Classique,150,15,5,10
 C002,Cookie Bio,120,190,18,5
 C003,Cookie ChocoMax,140,230,22,5

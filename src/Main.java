@@ -5,8 +5,8 @@ class Main extends Program {
 
 	final String CLEAR_SEQUENCE = "\033[H\033[2J";
 	final char CSV_SEPARATOR = ',';
-	final int ARGENT_DEPART = 200;
-	final int GAIN_DEPART = 0;
+	final int ARGENT_DEPART = 800;
+	final int GAIN_DEPART = 100;
 	final int NB_COLONNES_SAVE = 10; // nombre de colonnes utilisées dans le fichier de sauvegarde CSV
 	
 	String ressourcesPrefix = "resources/";
@@ -419,7 +419,7 @@ class Main extends Program {
 			if (c.taxe < 0) c.taxe = 0;
 			println("Taxes reduites !");
 		}
-		c.quantite = c.quantite + 15;
+		
 		attendreValidationUtilisateur();
 	}
 
@@ -464,8 +464,8 @@ class Main extends Program {
 	}
 
 	// Calcule les gains financiers a la fin du tour
-	void calculerFinDeTour(Partie p) {
-		int volume = c.quantite;
+	/*void calculerFinDeTour(Partie p) {
+		int volume = 10000;
 		CookieStat c = p.cookie;
 		int margeUnitaire = c.prix - c.matiere;
 		int gainBrut = margeUnitaire * volume;
@@ -475,7 +475,15 @@ class Main extends Program {
 		p.gainJour = gainNet;
 		p.argent = p.argent + gainNet;
 	}
-
+	*/
+	void calculerFinDeTour(Partie p) {
+		int quantiteVendu = c.quantite;
+		int gainParCookies = c.prix - c.matiere;
+		int benefice = gainParCookies * quantiteVendu - ( c.taxe / 100);
+		
+		p.gainJour = benefice;
+		p.argent = p.argent + benefice;
+	}
 	//endregion
 
 	// ============================== SAUVEGARDE ==============================
