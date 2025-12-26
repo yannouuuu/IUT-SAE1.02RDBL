@@ -477,6 +477,7 @@ class Main extends Program {
 	}
 	*/
 	void calculerFinDeTour(Partie p) {
+		CookieStat c = p.cookie;
 		int quantiteVendu = c.quantite;
 		int gainParCookies = c.prix - c.matiere;
 		int benefice = gainParCookies * quantiteVendu - ( c.taxe / 100);
