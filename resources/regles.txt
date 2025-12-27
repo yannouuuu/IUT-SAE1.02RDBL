@@ -1,0 +1,7 @@
+=== REGLES DE COOKIESLAND ===
+1. Repondez aux questions d'economie-gestion (4 choix possibles).
+2. Une bonne reponse debloque un bonus (matiere, prix ou taxe).
+3. Une mauvaise reponse applique un malus aleatoire.
+4. Atteignez les paliers d'argent pour faire grandir votre empire.
+5. Utilisez les ameliorations pour equilibrer production et fiscalite.
+Retour au menu principal : appuyez sur ENTREE.

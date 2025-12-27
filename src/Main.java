@@ -5,8 +5,8 @@ class Main extends Program {
 
 	final String CLEAR_SEQUENCE = "\033[H\033[2J";
 	final char CSV_SEPARATOR = ',';
-	final int ARGENT_DEPART = 800;
-	final int GAIN_DEPART = 100;
+	final int ARGENT_DEPART = 150;
+	final int GAIN_DEPART = 30;
 	final int NB_COLONNES_SAVE = 10; // nombre de colonnes utilisées dans le fichier de sauvegarde CSV
 	
 	String ressourcesPrefix = "resources/";
@@ -14,6 +14,8 @@ class Main extends Program {
 	String cookiesCsv;
 	String savesCsv;
 	String logoAscii;
+	String reglesTxt;
+	String menuTxt;
 
 	// Point d'entree principal du programme
 	void algorithm() {
@@ -32,6 +34,8 @@ class Main extends Program {
 		cookiesCsv = ressourcesPrefix + "cookies.csv";
 		savesCsv = ressourcesPrefix + "saves.csv";
 		logoAscii = ressourcesPrefix + "cookieslandascii.txt";
+		reglesTxt = ressourcesPrefix + "regles.txt";
+		menuTxt = ressourcesPrefix + "menu.txt";
 	}
 
 
@@ -66,13 +70,10 @@ class Main extends Program {
 	// Affiche les regles du jeu a l'ecran
 	void afficherRegles() {
 		effacerTerminal();
-		println("=== REGLES DE COOKIESLAND ===");
-		println("1. Repondez aux questions d'economie-gestion (4 choix possibles).");
-		println("2. Une bonne reponse debloque un bonus (matiere, prix ou taxe).");
-		println("3. Une mauvaise reponse applique un malus aleatoire.");
-		println("4. Atteignez les paliers d'argent pour faire grandir votre empire.");
-		println("5. Utilisez les ameliorations pour equilibrer production et fiscalite.");
-		println("Retour au menu principal : appuyez sur ENTREE.");
+		File regles = newFile(reglesTxt);
+		while (ready(regles)) {
+			println(readLine(regles));
+		}
 		attendreValidationUtilisateur();
 	}
 
@@ -83,12 +84,10 @@ class Main extends Program {
 
 	// Affiche les options du menu principal
 	void afficherMenuPrincipal() {
-		println("Choisissez une option :");
-		println("1. Nouvelle partie");
-		println("2. Charger une partie");
-		println("3. Afficher les regles du jeu");
-		println("4. Reinitialiser les sauvegardes");
-		println("5. Quitter");
+		File menu = newFile(menuTxt);
+		while (ready(menu)) {
+			println(readLine(menu));
+		}
 		print("> ");
 	}
 
@@ -151,7 +150,17 @@ class Main extends Program {
 				
 				if (partie.argent < 0) {
 					effacerTerminal();
-					println("Vous avez fait faillite !");
+					println("");
+					println("  ═══════════════════════════════════════════════════");
+					println("");
+					println("             ☠  GAME OVER - FAILLITE  ☠");
+					println("");
+					println("     Votre entreprise de cookies a fait faillite !");
+					println("");
+					println("     Vous avez survecu " + partie.jour + " jours.");
+					println("");
+					println("  ═══════════════════════════════════════════════════");
+					println("");
 					jeuEnCours = false;
 					attendreValidationUtilisateur();
 				} else {
@@ -302,27 +311,59 @@ class Main extends Program {
 	// Affiche les informations du tour courant (jour, argent, stats, question)
 	void afficherEcranTour(Partie partie, Question question ,CookieStat cookieStat) {
 		effacerTerminal();
-		afficherLogo();
-		println("_______________________");
-		println("Jour " + partie.jour + " - Argent : " + partie.argent + " euros - Gain de la journee : " + partie.gainJour + " euros - Nombre de cookies : " + cookieStat.quantite);
-		println("_______________________");
 		
 		CookieStat c = partie.cookie;
-		if (c != null) {
-			println("Stats du cookie :");
-			println(" - Matiere prem. : " + c.matiere);
-			println(" - Prix de vente : " + c.prix);
-			println(" - Taxe : " + c.taxe + "%");
-			println(" - Quantité : " + c.quantite);
-		}
-		println("_______________________");
+		int marge = c != null ? c.prix - c.matiere : 0;
+		String indicateurMarge = marge >= 0 ? "▲" : "▼";
+		String indicateurGain = partie.gainJour >= 0 ? "▲" : "▼";
 		
-		println("Question : " + question.intitule);
-		println("A. " + question.propositions[0]);
-		println("B. " + question.propositions[1]);
-		println("C. " + question.propositions[2]);
-		println("D. " + question.propositions[3]);
-		println("_______________________");
+		// === EN-TÊTE ===
+		println("");
+		println("  ══════════════════════════════════════════════════════════════");
+		println("                     🍪  COOKIESLAND  🍪");
+		println("  ══════════════════════════════════════════════════════════════");
+		println("");
+		
+		// === BARRE DE STATUT ===
+		println("  📅 JOUR " + partie.jour);
+		println("  ─────────────────────────────────────────────────────────────");
+		println("");
+		
+		// === FINANCES (simple et clair) ===
+		println("  💰 FINANCES");
+		println("     Argent disponible ............ " + partie.argent + " €");
+		println("     Gain du jour ................. " + indicateurGain + " " + partie.gainJour + " €");
+		println("");
+		
+		// === COOKIE (simple et clair) ===
+		if (c != null) {
+			println("  🍪 " + c.nom.toUpperCase());
+			println("     Cout matiere premiere ........ " + c.matiere + " €");
+			println("     Prix de vente ................ " + c.prix + " €");
+			println("     Taxe ......................... " + c.taxe + " %");
+			println("     Quantite en stock ............ " + c.quantite + " unites");
+			println("     Marge par cookie ............. " + indicateurMarge + " " + marge + " €");
+		}
+		println("");
+		
+		// === QUESTION ===
+		println("  ─────────────────────────────────────────────────────────────");
+		println("  ❓ QUESTION");
+		println("  ─────────────────────────────────────────────────────────────");
+		println("");
+		println("     " + question.intitule);
+		println("");
+		println("     A) " + question.propositions[0]);
+		println("     B) " + question.propositions[1]);
+		println("     C) " + question.propositions[2]);
+		println("     D) " + question.propositions[3]);
+		println("");
+		
+		// === COMMANDES ===
+		println("  ─────────────────────────────────────────────────────────────");
+		println("  ⌨️  COMMANDES:  A/B/C/D = Repondre  |  S = Sauver  |  Q = Quitter");
+		println("  ─────────────────────────────────────────────────────────────");
+		println("");
 	}
 
 	// Demande a l'utilisateur de saisir sa reponse (A, B, C, D, S ou Q)
@@ -383,11 +424,20 @@ class Main extends Program {
 	// Affiche si la reponse etait correcte ou non
 	void afficherEcranResultat(boolean succes) {
 		effacerTerminal();
+		println("");
+		println("  ═══════════════════════════════════════════════════");
+		println("");
 		if (succes) {
-			println("          BONNE REPONSE !!!!!!!!          ");
+			println("     ★ ★ ★   BONNE REPONSE !   ★ ★ ★");
+			println("");
+			println("     Vous gagnez un bonus !");
 		} else {
-			println("          MAUVAISE REPONSE...          ");
+			println("     ✗ ✗ ✗   MAUVAISE REPONSE   ✗ ✗ ✗");
+			println("");
+			println("     Vous subissez un malus...");
 		}
+		println("");
+		println("  ═══════════════════════════════════════════════════");
 		println("");
 		attendreValidationUtilisateur();
 	}
@@ -400,26 +450,41 @@ class Main extends Program {
 	// Applique un bonus choisi par le joueur
 	void traiterBonus(Partie p) {
 		effacerTerminal();
-		println("Que souhaitez vous ameliorer ??");
-		println(" A. Matiere premiere (Cout -10%)");
-		println(" B. Prix de vente (Prix +10%)");
-		println(" C. Baisse des taxes (Taxe -2%)");
+		println("");
+		println("  ═══════════════════════════════════════════════════");
+		println("         🎁 CHOISISSEZ VOTRE AMELIORATION");
+		println("  ═══════════════════════════════════════════════════");
+		println("");
+		println("  A) Reduire cout matiere premiere (-5%)");
+		println("     → Achetez moins cher vos ingredients");
+		println("");
+		println("  B) Augmenter prix de vente (+5%)");
+		println("     → Vendez vos cookies plus cher");
+		println("");
+		println("  C) Reduire les taxes (-1%)");
+		println("     → Moins d'impots a payer");
+		println("");
+		println("  ───────────────────────────────────────────────────");
 		
 		String choix = demanderReponseABC();
 		
 		CookieStat c = p.cookie;
+		println("");
 		if (equals(choix, "A")) {
-			c.matiere = (int)(c.matiere * 0.9);
-			println("Cout matiere premiere reduit !");
+			int ancien = c.matiere;
+			c.matiere = (int)(c.matiere * 0.95);
+			println("  ✓ Cout matiere premiere : " + ancien + " €  →  " + c.matiere + " €");
 		} else if (equals(choix, "B")) {
-			c.prix = (int)(c.prix * 1.1);
-			println("Prix de vente augmente !");
+			int ancien = c.prix;
+			c.prix = (int)(c.prix * 1.05);
+			println("  ✓ Prix de vente : " + ancien + " €  →  " + c.prix + " €");
 		} else if (equals(choix, "C")) {
-			c.taxe = c.taxe - 2;
+			int ancien = c.taxe;
+			c.taxe = c.taxe - 1;
 			if (c.taxe < 0) c.taxe = 0;
-			println("Taxes reduites !");
+			println("  ✓ Taxe : " + ancien + " %  →  " + c.taxe + " %");
 		}
-		
+		println("");
 		attendreValidationUtilisateur();
 	}
 
@@ -448,18 +513,34 @@ class Main extends Program {
 	void traiterMalus(Partie p) {
 		effacerTerminal();
 		int r = (int)(random() * 3);
-		println("Votre malus est :");
 		CookieStat c = p.cookie;
+		
+		println("");
+		println("  ═══════════════════════════════════════════════════");
+		println("              ⚠  MALUS APPLIQUE  ⚠");
+		println("  ═══════════════════════════════════════════════════");
+		println("");
+		
 		if (r == 0) {
-			println("Augmentation du cout matiere premiere (+15%)");
-			c.matiere = (int)(c.matiere * 1.15);
+			int ancien = c.matiere;
+			c.matiere = (int)(c.matiere * 1.25);
+			println("  ✖ Cout matiere premiere augmente (+25%)");
+			println("    " + ancien + " €  →  " + c.matiere + " €");
 		} else if (r == 1) {
-			println("Baisse du prix de vente (-10%)");
-			c.prix = (int)(c.prix * 0.9);
+			int ancien = c.prix;
+			c.prix = (int)(c.prix * 0.85);
+			println("  ✖ Prix de vente reduit (-15%)");
+			println("    " + ancien + " €  →  " + c.prix + " €");
 		} else {
-			println("Augmentation des taxes (+5%)");
-			c.taxe = c.taxe + 5;
+			int ancien = c.taxe;
+			c.taxe = c.taxe + 8;
+			println("  ✖ Taxes augmentees (+8%)");
+			println("    " + ancien + " %  →  " + c.taxe + " %");
 		}
+		
+		println("");
+		println("  ═══════════════════════════════════════════════════");
+		println("");
 		attendreValidationUtilisateur();
 	}
 
