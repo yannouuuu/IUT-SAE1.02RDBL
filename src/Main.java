@@ -16,6 +16,9 @@ class Main extends Program {
 	String logoAscii;
 	String reglesTxt;
 	String menuTxt;
+	String gameoverTxt;
+	String bonneReponseTxt;
+	String mauvaiseReponseTxt;
 
 	// Point d'entree principal du programme
 	void algorithm() {
@@ -36,6 +39,9 @@ class Main extends Program {
 		logoAscii = ressourcesPrefix + "cookieslandascii.txt";
 		reglesTxt = ressourcesPrefix + "regles.txt";
 		menuTxt = ressourcesPrefix + "menu.txt";
+		gameoverTxt = ressourcesPrefix + "gameover.txt";
+		bonneReponseTxt = ressourcesPrefix + "bonnereponse.txt";
+		mauvaiseReponseTxt = ressourcesPrefix + "mauvaisereponse.txt";
 	}
 
 
@@ -104,6 +110,14 @@ class Main extends Program {
 		}
 	}
 
+	// Affiche le contenu d'un fichier texte
+	void afficherFichier(String chemin) {
+		File fichier = newFile(chemin);
+		while (ready(fichier)) {
+			println(readLine(fichier));
+		}
+	}
+
 	//endregion
 
 	// ============================== FONCTIONS PRINCIPALE DU FONCTIONNEMENT ==============================
@@ -150,13 +164,7 @@ class Main extends Program {
 				
 				if (partie.argent < 0) {
 					effacerTerminal();
-					println("");
-					println("  ═══════════════════════════════════════════════════");
-					println("");
-					println("             ☠  GAME OVER - FAILLITE  ☠");
-					println("");
-					println("     Votre entreprise de cookies a fait faillite !");
-					println("");
+					afficherFichier(gameoverTxt);
 					println("     Vous avez survecu " + partie.jour + " jours.");
 					println("");
 					println("  ═══════════════════════════════════════════════════");
@@ -424,21 +432,11 @@ class Main extends Program {
 	// Affiche si la reponse etait correcte ou non
 	void afficherEcranResultat(boolean succes) {
 		effacerTerminal();
-		println("");
-		println("  ═══════════════════════════════════════════════════");
-		println("");
 		if (succes) {
-			println("     ★ ★ ★   BONNE REPONSE !   ★ ★ ★");
-			println("");
-			println("     Vous gagnez un bonus !");
+			afficherFichier(bonneReponseTxt);
 		} else {
-			println("     ✗ ✗ ✗   MAUVAISE REPONSE   ✗ ✗ ✗");
-			println("");
-			println("     Vous subissez un malus...");
+			afficherFichier(mauvaiseReponseTxt);
 		}
-		println("");
-		println("  ═══════════════════════════════════════════════════");
-		println("");
 		attendreValidationUtilisateur();
 	}
 
