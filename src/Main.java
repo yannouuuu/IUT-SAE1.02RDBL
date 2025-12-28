@@ -424,6 +424,17 @@ class Main extends Program {
 		return res;
 	}
 
+//endregion
+
+	// ============================== test ==============================
+	//region Tests
+
+	void test_majuscule(){
+		assertEquals( "A" , majuscule("a"));
+		assertEquals( "c" , majuscule("t"));
+		assertEquals( "A" , majuscule("A"));
+	}
+
 	//endregion
 
 	// ============================== AFFICHAGE ==============================
@@ -564,6 +575,7 @@ class Main extends Program {
 		p.gainJour = benefice;
 		p.argent = p.argent + benefice;
 	}
+
 	//endregion
 
 	// ============================== SAUVEGARDE ==============================
@@ -825,5 +837,9 @@ class Main extends Program {
 		return OptionMenu.QUITTER;
 	}
 	//endregion
+// ============================== Tests ==============================
+	//endregion
+
+
 }
 
