@@ -134,6 +134,7 @@ class Main extends Program {
 	// Affiche les regles du jeu a l'ecran
 	void afficherRegles() {
 		effacerTerminal();
+		afficherLogo();
 		afficherFichierCouleur(reglesTxt, CYAN);
 		attendreValidationUtilisateur();
 	}
@@ -152,6 +153,7 @@ class Main extends Program {
 	void afficherLogo() {
 		File logo = newFile(logoAscii);
 		if (ready(logo)) {
+			println("");
 			afficherFichierCouleur(logoAscii, GOLD);
 		} else {
 			println(or("[[[COOKIESLAND]]]"));
@@ -261,6 +263,7 @@ class Main extends Program {
 	// Affiche l'ecran de fin de partie
 	void afficherEcranGameOver(Partie p) {
 		effacerTerminal();
+		afficherLogo();
 		afficherFichierCouleur(gameoverTxt, RED);
 		println(jaune("     Vous avez survecu ") + or("" + p.jour) + jaune(" jours."));
 		println("");
@@ -300,7 +303,7 @@ class Main extends Program {
 			remplirLigneSauvegarde(data, existingRows, nomSauvegarde, p);
 		}
 		
-		saveCSV(data, savesCsv);
+		saveCSV(data, savesCsv, CSV_SEPARATOR);
 		println(vert("Partie '") + or(nomSauvegarde) + vert("' sauvegardee !"));
 		attendreValidationUtilisateur();
 	}
@@ -420,7 +423,6 @@ class Main extends Program {
 		String indicateurGain = partie.gainJour >= 0 ? "▲" : "▼";
 		
 		// === EN-TÊTE ===
-		println("");
 		afficherLogo();
 		println("");
 		
@@ -579,6 +581,7 @@ class Main extends Program {
 	// Affiche si la reponse etait correcte ou non
 	void afficherEcranResultat(boolean succes) {
 		effacerTerminal();
+		afficherLogo();
 		if (succes) {
 			afficherFichierCouleur(bonneReponseTxt, GREEN);
 		} else {
@@ -595,6 +598,7 @@ class Main extends Program {
 	// Applique un bonus choisi par le joueur
 	void traiterBonus(Partie p) {
 		effacerTerminal();
+		afficherLogo();
 		println("");
 		println(vert("  ═══════════════════════════════════════════════════"));
 		println(vert("         🎁 CHOISISSEZ VOTRE AMELIORATION"));
@@ -657,6 +661,7 @@ class Main extends Program {
 	// Applique un malus aleatoire au joueur
 	void traiterMalus(Partie p) {
 		effacerTerminal();
+		afficherLogo();
 		int r = (int)(random() * 3);
 		CookieStat c = p.cookie;
 		
@@ -1008,7 +1013,7 @@ class Main extends Program {
 		String rep = readString();
 		if (equals(majuscule(rep), "O")) {
 			String[][] data = new String[0][NB_COLONNES_SAVE];
-			saveCSV(data, savesCsv);
+			saveCSV(data, savesCsv, CSV_SEPARATOR);
 			println("Fichier de sauvegarde reinitialise.");
 		} else {
 			println("Annule.");
