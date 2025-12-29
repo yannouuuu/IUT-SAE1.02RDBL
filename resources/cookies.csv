@@ -1,4 +1,16 @@
-id,nom,matiere,prix,taxe,quantite
-C001,Cookie Classique,20,25,15,15
-C002,Cookie Bio,32,38,18,12
-C003,Cookie ChocoMax,42,50,20,10
+id;nom;matiere;prix;taxe;quantite
+C001;Cookie Classique;20;25;15;15
+C002;Cookie Bio;32;38;18;12
+C003;Cookie ChocoMax;42;50;20;10
+C004;Cookie Vanille;18;22;12;18
+C005;Cookie Caramel;25;32;14;14
+C006;Cookie Noisette;28;35;16;13
+C007;Cookie Double Choco;48;60;22;8
+C008;Cookie Premium Gold;65;85;25;6
+C009;Cookie Fruits Rouges;35;45;17;11
+C010;Cookie Speculoos;30;38;15;12
+C011;Cookie Matcha;40;52;19;9
+C012;Cookie Citron;22;28;13;16
+C013;Cookie Coco;26;33;14;14
+C014;Cookie Cafe;24;30;13;15
+C015;Cookie Amande;38;48;18;10

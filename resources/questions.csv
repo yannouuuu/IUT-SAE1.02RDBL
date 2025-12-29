@@ -1,5 +1,126 @@
-id,intitule,repA,repB,repC,repD,bonne,difficulte
-Q001,Quel indicateur suit la rentabilée quotidienne de votre biscuiterie ?,Le total des likes,Votre argent disponible,La couleur des boites,La météo locale,B,FACILE
-Q002,Quelle action augmente directement la capacitée de production ?,Investir en matière première,Payer plus de taxes,Dormir toute la journée,Couper la publicié,A,FACILE
-Q003,Que se passe-t-il si la taxe augmente sur chaque cookie vendu ?,Le gain unitaire baisse,Le gain unitaire augmente,Rien ne change,Les matières premières augmentent,A,FACILE
-Q004,Quel réfléxe adopter avant d'engager un bonus couteux ?,Vérifier l'argent disponible,Fermer l'usine,Offrir tout le stock,Ignorer les comptes,A,FACILE
+id;intitule;repA;repB;repC;repD;bonne;difficulte
+Q001;Quel indicateur suit la rentabilée quotidienne de votre biscuiterie ?;Le total des likes;Votre argent disponible;La couleur des boites;La météo locale;B;FACILE
+Q002;Quelle action augmente directement la capacitée de production ?;Investir en matière première;Payer plus de taxes;Dormir toute la journée;Couper la publicié;A;FACILE
+Q003;Que se passe-t-il si la taxe augmente sur chaque cookie vendu ?;Le gain unitaire baisse;Le gain unitaire augmente;Rien ne change;Les matières premières augmentent;A;FACILE
+Q004;Quel réfléxe adopter avant d'engager un bonus couteux ?;Vérifier l'argent disponible;Fermer l'usine;Offrir tout le stock;Ignorer les comptes;A;FACILE
+Q005;Qu'est-ce qu'un cookie ?;Un biscuit;Un fruit;Un animal;Un jeu;A;FACILE
+Q006;Pourquoi produire des cookies ?;Pour gagner de l'argent;Pour dormir;Pour jouer;Pour manger des fruits;A;FACILE
+Q007;Que faut-il pour faire des cookies ?;De la farine;Des voitures;Des livres;Des chaussures;A;FACILE
+Q008;Où vend-on les cookies ?;Dans une biscuiterie;Dans une piscine;Dans une bibliothèque;Dans un zoo;A;FACILE
+Q009;Qu'est-ce que la production ?;Faire des cookies;Regarder la télé;Dormir;Jouer au foot;A;FACILE
+Q010;Que signifie gagner de l'argent ?;Recevoir des pièces;Perdre des pièces;Acheter des jouets;Vendre des livres;A;FACILE
+Q011;Quel est le but du jeu ?;Gagner beaucoup d'argent;Perdre tout;Ne rien faire;Dormir toute la journée;A;FACILE
+Q012;Que se passe-t-il si on ne produit pas ?;On perd de l'argent;On gagne plus;On dort mieux;Rien;A;FACILE
+Q013;Qu'est-ce qu'une taxe ?;Un impôt sur les ventes;Un cadeau;Un jeu;Un animal;A;FACILE
+Q014;Pourquoi payer des taxes ?;Pour aider le pays;Pour acheter plus;Pour dormir;Pour jouer;A;FACILE
+Q015;Que fait un bonus ?;Augmente la production;Diminue l'argent;Ferme l'usine;Ouvre une piscine;A;FACILE
+Q016;Quand utiliser un bonus ?;Quand on a assez d'argent;Quand on dort;Quand on joue;Quand on mange;A;FACILE
+Q017;Qu'est-ce que la matière première ?;Les ingrédients pour les cookies;Les voitures;Les livres;Les animaux;A;FACILE
+Q018;Pourquoi investir en matière première ?;Pour produire plus;Pour dormir;Pour jouer;Pour manger;A;FACILE
+Q019;Que montre l'argent disponible ?;Combien on a d'argent;Combien de cookies;Combien d'amis;Combien de jeux;A;FACILE
+Q020;Que faire si on n'a plus d'argent ?;Produire et vendre;Dormir;Jouer;Manger;A;FACILE
+Q021;Qu'est-ce que la publicité ?;Pour faire connaître les cookies;Pour dormir;Pour jouer;Pour manger;A;FACILE
+Q022;Pourquoi couper la publicité ?;Pour économiser;Pour produire plus;Pour dormir;Pour jouer;A;FACILE
+Q023;Que se passe-t-il si on vend tous les cookies ?;On gagne de l'argent;On perd tout;On dort;On joue;A;FACILE
+Q024;Quel est le meilleur moment pour investir ?;Quand on a assez d'argent;Quand on dort;Quand on joue;Quand on mange;A;FACILE
+Q025;Qu'est-ce qu'une journée dans le jeu ?;24 heures de jeu;Une semaine;Un mois;Une année;A;FACILE
+Q026;Pourquoi suivre la rentabilité ?;Pour savoir si on gagne;Pour dormir;Pour jouer;Pour manger;A;FACILE
+Q027;Que faire si la taxe baisse ?;Gagner plus par cookie;Perdre plus;Ne rien changer;Acheter plus;A;FACILE
+Q028;Qu'est-ce qu'un stock ?;Les cookies en réserve;Les voitures;Les livres;Les animaux;A;FACILE
+Q029;Pourquoi avoir du stock ?;Pour vendre plus tard;Pour dormir;Pour jouer;Pour manger;A;FACILE
+Q030;Que signifie capacité de production ?;Combien de cookies on peut faire;Combien d'argent;Combien d'amis;Combien de jeux;A;FACILE
+Q031;Comment augmenter la capacité ?;Investir;Dormir;Jouer;Manger;A;FACILE
+Q032;Qu'est-ce que le gain unitaire ?;Argent par cookie;Total d'argent;Argent par jour;Argent par semaine;A;FACILE
+Q033;Pourquoi est-il important de vérifier les comptes avant un investissement ?;Pour éviter les pertes;Pour dormir;Pour jouer;Pour manger;A;MOYEN
+Q034;Si on dort pendant 2 jours, combien de production perdue si capacité 10/jour ?;20;10;0;5;A;MOYEN
+Q035;Si la taxe est de 1,5€ par cookie pour les 10 premiers et 2€ pour les suivants, combien payez-vous pour 15 cookies ?;25€;22,5€;30€;20€;A;DIFFICILE
+Q036;Si coût matière 2,5€ par cookie, publicité 8€, production 12 cookies, coût total ?;38€;30€;20€;8€;A;DIFFICILE
+Q037;Si prix 6,5€, coût matière 2,2€, taxe 1,3€, gain unitaire ?;3€;2,5€;4€;1,5€;A;DIFFICILE
+Q038;Si vous avez 120€, bonus coûte 50€ mais réduit les coûts de 10€/jour, est-ce rentable sur 10 jours si gain actuel 15€/jour ?;Oui;Non;Peut-être;Je ne sais pas;A;DIFFICILE
+Q039;Que choisir entre investir 20€ pour doubler production ou dormir ?;Investir;Dormir;Les deux;Ni l'un ni l'autre;A;MOYEN
+Q040;Si production actuelle 10 cookies/jour, après bonus x2, combien ?;20;10;5;15;A;MOYEN
+Q041;Si argent 50€, taxe baisse de 2€ à 1€, gain par cookie augmente de ?;1€;2€;0€;3€;A;MOYEN
+Q042;Avec gain quotidien de 12€ les 8 premiers jours, puis 18€, combien de jours pour atteindre 150€ ?;11 jours;8 jours;10 jours;15 jours;A;DIFFICILE
+Q043;Si stock plein et plus de place, que faire ?;Vendre;Produire plus;Dormir;Jouer;A;MOYEN
+Q044;Quel bonus choisir si argent limité ?;Le moins cher;Le plus cher;Celui du milieu;Aucun;A;MOYEN
+Q045;Si publicité coûte 10€ et apporte 20€ de ventes, est-ce rentable ?;Oui;Non;Peut-être;Je ne sais pas;A;MOYEN
+Q046;Que se passe-t-il si on ignore les taxes ?;On perd de l'argent;On gagne plus;Rien;On dort;A;MOYEN
+Q047;Si matière première manque, que faire ?;Acheter plus;Produire moins;Dormir;Vendre;A;MOYEN
+Q048;Quel indicateur regarder pour investir ?;Argent disponible;La météo;Les couleurs;Les animaux;A;MOYEN
+Q049;Si gain quotidien augmente de 2€ par jour, starting at 10€, en 7 jours combien total ?;112€;70€;80€;60€;A;DIFFICILE
+Q050;Pourquoi varier la difficulté ?;Pour s'adapter au joueur;Pour dormir;Pour jouer;Pour manger;A;MOYEN
+Q051;Calculez le gain net si prix 7,5€, coût matière 2,5€, taxe 1,2€ par cookie, production 15, publicité coûte 10€, combien gagnez-vous net ?;47€;57€;37€;10€;A;DIFFICILE
+Q052;Si bonus coûte 150€ et triple production, combien de jours pour récupérer si gain quotidien actuel 25€ ?;3 jours;5 jours;10 jours;15 jours;A;DIFFICILE
+Q053;Quelle stratégie économique pour optimiser les profits sur un horizon de 10 jours en considérant les coûts d'opportunité ?;Investir dans la capacité de production dès le départ;Maintenir la production constante sans investissement;Utiliser les périodes de sommeil pour réduire les coûts;Maximiser les ventes immédiates sans stock;A;DIFFICILE
+Q054;Si la taxe est progressive (plus on vend, plus la taxe par unité augmente), quelle stratégie adopter pour minimiser les coûts fiscaux ?;Vendre en petites quantités régulières;Vendre tout d'un coup;Ne pas vendre;Produire sans vendre;A;DIFFICILE
+Q055;Quel est le seuil de rentabilité si coût fixe 100€, coût variable 2€/cookie, prix 5€/cookie ?;34 cookies;50 cookies;25 cookies;100 cookies;A;DIFFICILE
+Q056;Si l'élasticité-prix de la demande est -1,5, une baisse de prix de 10% augmente les ventes de ?;15%;10%;20%;5%;A;DIFFICILE
+Q057;Quel est le ROI annuel d'un investissement de 200€ qui génère 50€/an ?;25%;50%;100%;75%;A;DIFFICILE
+Q058;Dans une économie de marché, que représente la courbe d'offre ?;La quantité que les producteurs sont prêts à vendre;La quantité que les consommateurs veulent acheter;Le prix maximum;Le coût minimum;A;DIFFICILE
+Q059;Si la production est à rendement décroissant, ajouter un ouvrier supplémentaire ?;Augmente la production marginale de moins;Augmente de plus;Ne change pas;Diminue;A;DIFFICILE
+Q060;Quel est l'effet d'une taxe sur les biens de luxe sur les cookies haut de gamme ?;Diminue la demande;Augmente la demande;Ne change rien;Double la production;A;DIFFICILE
+Q061;Calculez la marge bénéficiaire si revenu 1000€, coût des ventes 600€, frais généraux 200€ ?;20%;30%;40%;50%;A;DIFFICILE
+Q062;Quelle est la différence entre coût moyen et coût marginal ?;Coût total divisé par quantité vs coût d'une unité supplémentaire;Le même;Coût fixe vs variable;Prix vs coût;A;DIFFICILE
+Q063;Si la concurrence parfaite, le prix est déterminé par ?;L'intersection offre-demande;L'entreprise;Le gouvernement;Les syndicats;A;DIFFICILE
+Q064;Quel impact d'une récession économique sur les ventes de cookies ?;Diminue;Augmente;Ne change pas;Double;A;DIFFICILE
+Q065;Quel ingrédient est essentiel pour faire des cookies au chocolat ?;Du chocolat;Du fromage;Du poisson;Des légumes;A;FACILE
+Q066;Que signifie faire du bénéfice ?;Gagner plus qu'on dépense;Dépenser plus qu'on gagne;Ne rien gagner;Tout perdre;A;FACILE
+Q067;Pourquoi avoir plusieurs recettes de cookies ?;Pour attirer plus de clients;Pour compliquer la production;Pour perdre de l'argent;Pour fermer la boutique;A;FACILE
+Q068;Qu'est-ce qu'un client fidèle ?;Quelqu'un qui revient acheter;Quelqu'un qui n'achète jamais;Un concurrent;Un fournisseur;A;FACILE
+Q069;Que faire quand les cookies sont périmés ?;Les jeter;Les vendre plus cher;Les stocker;Les ignorer;A;FACILE
+Q070;Pourquoi nettoyer l'usine ?;Pour l'hygiène;Pour perdre du temps;Pour casser les machines;Pour fermer;A;FACILE
+Q071;Si vous vendez 50 cookies à 3€ chacun, combien gagnez-vous ?;150€;100€;50€;200€;A;MOYEN
+Q072;Quel est l'avantage d'acheter les matières premières en gros ?;Payer moins cher par unité;Payer plus cher;Avoir moins de stock;Produire moins;A;MOYEN
+Q073;Si la demande augmente, que devez-vous faire ?;Produire plus;Produire moins;Fermer l'usine;Baisser les prix;A;MOYEN
+Q074;Qu'est-ce qu'un concurrent ?;Une autre biscuiterie;Un client;Un employé;Un fournisseur;A;MOYEN
+Q075;Si vous avez 200€ et dépensez 75€ en matières premières, combien reste-t-il ?;125€;275€;75€;200€;A;MOYEN
+Q076;Pourquoi diversifier ses produits ?;Pour réduire les risques;Pour compliquer la gestion;Pour perdre des clients;Pour augmenter les coûts;A;MOYEN
+Q077;Que signifie optimiser la production ?;Produire mieux avec moins;Produire moins avec plus;Ne rien changer;Fermer l'usine;A;MOYEN
+Q078;Si un employé produit 20 cookies/heure et travaille 8h, combien de cookies ?;160;80;200;100;A;MOYEN
+Q079;Qu'est-ce que le chiffre d'affaires ?;Le total des ventes;Le total des dépenses;Le bénéfice;La perte;A;MOYEN
+Q080;Si le loyer augmente de 50€/mois, quel impact sur le bénéfice annuel ?;-600€;-50€;+600€;Aucun;A;MOYEN
+Q081;Calculez le bénéfice si ventes 500€, coûts fixes 150€, coûts variables 200€ ?;150€;500€;350€;50€;A;DIFFICILE
+Q082;Si vous empruntez 1000€ à 5% d'intérêt annuel, combien remboursez-vous après 1 an ?;1050€;1000€;1500€;950€;A;DIFFICILE
+Q083;Quel est le point mort si charges fixes 300€, marge unitaire 3€ ?;100 cookies;300 cookies;50 cookies;200 cookies;A;DIFFICILE
+Q084;Si l'inflation est de 3%, un cookie à 2€ coûtera combien l'année prochaine ?;2,06€;2,03€;2,30€;3€;A;DIFFICILE
+Q085;Calculez le taux de marge si prix de vente 5€, coût de revient 3€ ?;40%;60%;50%;30%;A;DIFFICILE
+Q086;Si la productivité augmente de 25%, 80 cookies deviennent ?;100 cookies;85 cookies;105 cookies;90 cookies;A;DIFFICILE
+Q087;Quel est l'amortissement annuel d'une machine à 6000€ sur 5 ans ?;1200€;6000€;600€;3000€;A;DIFFICILE
+Q088;Si les ventes baissent de 20% et étaient de 250 cookies, combien maintenant ?;200 cookies;230 cookies;180 cookies;225 cookies;A;DIFFICILE
+Q089;Calculez le coût d'opportunité si vous choisissez un projet à 500€ de gain vs un autre à 700€ ?;200€;500€;700€;1200€;A;DIFFICILE
+Q090;Si le taux de TVA est 20%, quel est le prix HT d'un cookie vendu 3€ TTC ?;2,50€;2,40€;2,80€;3€;A;DIFFICILE
+Q091;Quel outil permet de suivre les entrées et sorties d'argent ?;Un livre de comptes;Un four;Une balance;Un thermomètre;A;FACILE
+Q092;Que signifie être en rupture de stock ?;Ne plus avoir de cookies à vendre;Avoir trop de cookies;Fermer le magasin;Ouvrir une nouvelle boutique;A;FACILE
+Q093;Pourquoi emballer les cookies ?;Pour les protéger et les vendre;Pour les cacher;Pour les jeter;Pour les manger;A;FACILE
+Q094;Qu'est-ce qu'une commande client ?;Une demande d'achat;Un refus d'achat;Un vol;Un cadeau;A;FACILE
+Q095;Que fait un livreur ?;Apporte les cookies aux clients;Fabrique les cookies;Mange les cookies;Jette les cookies;A;FACILE
+Q096;Pourquoi noter les ventes chaque jour ?;Pour suivre l'activité;Pour perdre du temps;Pour oublier;Pour s'amuser;A;FACILE
+Q097;Qu'est-ce qu'un fournisseur ?;Celui qui vend les ingrédients;Celui qui achète les cookies;Un client;Un concurrent;A;FACILE
+Q098;Pourquoi comparer les prix des fournisseurs ?;Pour payer moins cher;Pour payer plus cher;Pour perdre du temps;Pour s'ennuyer;A;FACILE
+Q099;Que signifie fidéliser un client ?;Le faire revenir;Le faire partir;L'ignorer;Le tromper;A;FACILE
+Q100;Qu'est-ce qu'une promotion ?;Une réduction de prix temporaire;Une augmentation de prix;Une fermeture;Un vol;A;FACILE
+Q101;Si vous achetez 100kg de farine à 2€/kg, combien dépensez-vous ?;200€;100€;50€;300€;A;MOYEN
+Q102;Quel est l'intérêt d'un programme de fidélité ?;Garder les clients;Perdre les clients;Augmenter les prix;Fermer le magasin;A;MOYEN
+Q103;Si un cookie pèse 50g et vous avez 5kg de pâte, combien de cookies ?;100;50;200;75;A;MOYEN
+Q104;Qu'est-ce qu'une marge commerciale ?;La différence entre prix de vente et coût d'achat;Le prix de vente;Le coût d'achat;La taxe;A;MOYEN
+Q105;Si vous vendez 30 cookies/jour pendant 5 jours, combien au total ?;150;30;100;200;A;MOYEN
+Q106;Pourquoi faire des soldes ?;Pour écouler le stock;Pour garder le stock;Pour augmenter les prix;Pour fermer;A;MOYEN
+Q107;Si le coût de production baisse de 10%, vos bénéfices ?;Augmentent;Diminuent;Restent identiques;Disparaissent;A;MOYEN
+Q108;Qu'est-ce qu'un devis ?;Une estimation de prix;Une facture payée;Un bon de commande;Un reçu;A;MOYEN
+Q109;Si vous avez 3 employés à 1500€/mois chacun, masse salariale mensuelle ?;4500€;1500€;3000€;6000€;A;MOYEN
+Q110;Pourquoi analyser la concurrence ?;Pour s'améliorer;Pour copier illégalement;Pour abandonner;Pour ignorer le marché;A;MOYEN
+Q111;Si les charges fixes sont 500€ et variables 2€/cookie, coût total pour 200 cookies ?;900€;500€;400€;700€;A;MOYEN
+Q112;Qu'est-ce que le seuil de rentabilité ?;Le moment où on ne perd plus d'argent;Le moment où on ferme;Le premier jour;Le dernier jour;A;MOYEN
+Q113;Calculez le bénéfice net si CA 2000€, charges 1400€, impôts 150€ ?;450€;600€;2000€;1400€;A;DIFFICILE
+Q114;Si vous investissez 500€ et gagnez 75€/mois, délai de récupération ?;7 mois;5 mois;10 mois;12 mois;A;DIFFICILE
+Q115;Quel est le coût marginal si produire 101 cookies coûte 253€ et 100 cookies coûte 250€ ?;3€;253€;250€;1€;A;DIFFICILE
+Q116;Si la demande est élastique et vous augmentez le prix de 5%, les ventes ?;Baissent de plus de 5%;Baissent de moins de 5%;Augmentent;Restent stables;A;DIFFICILE
+Q117;Calculez le BFR si créances clients 800€, stocks 400€, dettes fournisseurs 500€ ?;700€;1700€;500€;300€;A;DIFFICILE
+Q118;Si le taux de marge est 30% et le coût est 10€, quel est le prix de vente ?;14,29€;13€;10€;30€;A;DIFFICILE
+Q119;Quel est l'effet de levier si rentabilité économique 8% et taux d'intérêt 5% ?;Positif;Négatif;Nul;Impossible à calculer;A;DIFFICILE
+Q120;Si vous produisez 1000 cookies avec rendement décroissant, le 1001ème cookie ?;Coûte plus cher que le 1000ème;Coûte moins cher;Coûte pareil;Est gratuit;A;DIFFICILE
+Q121;Calculez le ratio de liquidité si actifs courants 3000€, passifs courants 2000€ ?;1,5;5000;1000;0,67;A;DIFFICILE
+Q122;Si l'élasticité-revenu est 0,5 et le revenu augmente de 10%, la demande augmente de ?;5%;10%;0,5%;15%;A;DIFFICILE
+Q123;Quel est le coût moyen si coût total 600€ pour 150 cookies ?;4€;600€;150€;2€;A;DIFFICILE
+Q124;Si vous avez un crédit de 10000€ sur 5 ans à 4%, intérêts totaux approximatifs ?;2000€;400€;10000€;500€;A;DIFFICILE
+Q125;Calculez la valeur ajoutée si CA 5000€, consommations intermédiaires 2000€ ?;3000€;7000€;5000€;2000€;A;DIFFICILE

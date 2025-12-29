@@ -4,7 +4,7 @@ import extensions.CSVFile;
 class Main extends Program {
 
 	final String CLEAR_SEQUENCE = "\033[H\033[2J";
-	final char CSV_SEPARATOR = ',';
+	final char CSV_SEPARATOR = ';';
 	final int ARGENT_DEPART = 150;
 	final int GAIN_DEPART = 30;
 	final int NB_COLONNES_SAVE = 10; // nombre de colonnes utilisées dans le fichier de sauvegarde CSV
@@ -19,14 +19,13 @@ class Main extends Program {
 	String gameoverTxt;
 	String bonneReponseTxt;
 	String mauvaiseReponseTxt;
+	String choixCookieTxt;
 
 	// Point d'entree principal du programme
 	void algorithm() {
 		initialiserCheminsRessources();
 		boucleMenuPrincipal();
 	}
-
-
 
 	// Configure les chemins vers les fichiers de ressources (CSV, texte)
 	void initialiserCheminsRessources() {
@@ -42,6 +41,7 @@ class Main extends Program {
 		gameoverTxt = ressourcesPrefix + "gameover.txt";
 		bonneReponseTxt = ressourcesPrefix + "bonnereponse.txt";
 		mauvaiseReponseTxt = ressourcesPrefix + "mauvaisereponse.txt";
+		choixCookieTxt = ressourcesPrefix + "choixcookie.txt";
 	}
 
 
@@ -127,12 +127,16 @@ class Main extends Program {
 	void lancerNouvellePartie(){
 		CookieStat[] cookies = chargerCookies();
 		Question[] questions = chargerQuestions();
-		Partie partie = nouvellePartieInitiale(cookies);
-		if (partie.cookie == null){
+		
+		if (length(cookies) == 0) {
 			println("Impossible d'initialiser la partie (aucun cookie disponible).");
 			attendreValidationUtilisateur();
 		} else {
-			boucleJeu(partie, questions, partie.cookie);
+			int choix = afficherMenuSelectionCookie(cookies);
+			if (choix > 0) {
+				Partie partie = nouvellePartieAvecCookie(cookies[choix - 1]);
+				boucleJeu(partie, questions, partie.cookie);
+			}
 		}
 	}
 	
@@ -141,6 +145,7 @@ class Main extends Program {
 		boolean jeuEnCours = true;
 		while (jeuEnCours) {
 			Question question = questions[(int) (random() * length(questions))];
+			String bonneReponse = melangerPropositions(question);
 			afficherEcranTour(partie, question, cookiestat);
 	
 			String reponse = demanderReponse();
@@ -150,7 +155,7 @@ class Main extends Program {
 				sauvegarderPartie(partie);
 				jeuEnCours = false;
 			} else {
-				boolean estCorrect = verifierReponse(reponse, question);
+				boolean estCorrect = verifierReponse(reponse, bonneReponse);
 				
 				afficherEcranResultat(estCorrect);
 				
@@ -404,8 +409,58 @@ class Main extends Program {
 	}
 
 	// Compare la reponse de l'utilisateur avec la bonne reponse
-	boolean verifierReponse(String saisie, Question question) {
-		return equals(saisie, question.bonneReponse);
+	boolean verifierReponse(String saisie, String bonneReponse) {
+		return equals(saisie, bonneReponse);
+	}
+
+	// Melange les propositions d'une question et retourne la nouvelle lettre de la bonne reponse
+	String melangerPropositions(Question question) {
+		String[] props = question.propositions;
+		int indiceBonne = indiceDepuisLettre(question.bonneReponse);
+		String bonneReponseTexte = props[indiceBonne];
+		
+		// Melange de Fisher-Yates
+		for (int i = length(props) - 1; i > 0; i--) {
+			int j = (int)(random() * (i + 1));
+			String temp = props[i];
+			props[i] = props[j];
+			props[j] = temp;
+		}
+		
+		// Trouve le nouvel indice de la bonne reponse
+		int nouvelIndice = 0;
+		for (int i = 0; i < length(props); i++) {
+			if (equals(props[i], bonneReponseTexte)) {
+				nouvelIndice = i;
+			}
+		}
+		return lettreDepuisIndice(nouvelIndice);
+	}
+
+	// Convertit une lettre (A, B, C, D) en indice (0, 1, 2, 3)
+	int indiceDepuisLettre(String lettre) {
+		int indice = 3;
+		if (equals(lettre, "A")) {
+			indice = 0;
+		} else if (equals(lettre, "B")) {
+			indice = 1;
+		} else if (equals(lettre, "C")) {
+			indice = 2;
+		}
+		return indice;
+	}
+
+	// Convertit un indice (0, 1, 2, 3) en lettre (A, B, C, D)
+	String lettreDepuisIndice(int indice) {
+		String lettre = "D";
+		if (indice == 0) {
+			lettre = "A";
+		} else if (indice == 1) {
+			lettre = "B";
+		} else if (indice == 2) {
+			lettre = "C";
+		}
+		return lettre;
 	}
 
 	// Convertit une chaine en majuscule (pour les lettres a, b, c, d, q, s)
@@ -658,6 +713,65 @@ class Main extends Program {
 			partie.cookie = null;
 		}
 		return partie;
+	}
+
+	// Cree une nouvelle partie avec un cookie specifique
+	Partie nouvellePartieAvecCookie(CookieStat cookie) {
+		Partie partie = new Partie();
+		partie.jour = 1;
+		partie.argent = ARGENT_DEPART;
+		partie.gainJour = GAIN_DEPART;
+		partie.quantite = 5;
+		partie.cookie = copierCookie(cookie);
+		return partie;
+	}
+
+	// Affiche le menu de selection de cookie et retourne le choix (0 = annuler)
+	int afficherMenuSelectionCookie(CookieStat[] cookies) {
+		effacerTerminal();
+		afficherLogo();
+		println("");
+		afficherFichier(choixCookieTxt);
+		println("");
+		afficherListeCookies(cookies);
+		println("  0. Retour au menu principal");
+		println("");
+		print("  Votre choix > ");
+		int choix = lireEntierDansIntervalle(0, length(cookies));
+		return choix;
+	}
+
+	// Affiche la liste des cookies avec leurs stats
+	void afficherListeCookies(CookieStat[] cookies) {
+		int i = 0;
+		while (i < length(cookies)) {
+			afficherUnCookie(cookies[i], i + 1);
+			i = i + 1;
+		}
+	}
+
+	// Affiche un cookie avec son numero et ses stats
+	void afficherUnCookie(CookieStat c, int numero) {
+		int marge = calculerMarge(c);
+		String margeStr = formaterMarge(marge);
+		println("  " + numero + ". " + c.nom);
+		println("     Cout: " + c.matiere + "€ | Prix: " + c.prix + "€ | Taxe: " + c.taxe + "% | Marge: " + margeStr + "€");
+		println("");
+	}
+
+	// Calcule la marge d'un cookie
+	int calculerMarge(CookieStat c) {
+		int marge = c.prix - c.matiere - (c.prix * c.taxe / 100);
+		return marge;
+	}
+
+	// Formate la marge avec un + ou - devant
+	String formaterMarge(int marge) {
+		String resultat = "" + marge;
+		if (marge >= 0) {
+			resultat = "+" + marge;
+		}
+		return resultat;
 	}
 
 	// Cree une copie d'une structure CookieStat
