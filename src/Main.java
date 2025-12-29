@@ -176,6 +176,67 @@ class Main extends Program {
 		}
 	}
 
+	// Affiche les informations du tour courant (jour, argent, stats, question)
+	void afficherEcranTour(Partie partie, Question question ,CookieStat cookieStat) {
+		effacerTerminal();
+		
+		CookieStat c = partie.cookie;
+		int marge = c != null ? c.prix - c.matiere : 0;
+		String indicateurMarge = marge >= 0 ? "▲" : "▼";
+		String indicateurGain = partie.gainJour >= 0 ? "▲" : "▼";
+		
+		// === EN-TÊTE ===
+		afficherLogo();
+		println("");
+		
+		// === BARRE DE STATUT ===
+		println(jaune("  📅 JOUR " + partie.jour));
+		println(cyan("  ─────────────────────────────────────────────────────────────"));
+		println("");
+		
+		// === FINANCES (simple et clair) ===
+		println(gras(or("  💰 FINANCES")));
+		println("     Argent disponible ............ " + or(partie.argent + " €"));
+		println("     Gain du jour ................. " + couleurSelonSigne(partie.gainJour, indicateurGain + " " + partie.gainJour + " €"));
+		println("");
+		
+		// === COOKIE (simple et clair) ===
+		if (c != null) {
+			println(gras(magenta("  🍪 " + c.nom.toUpperCase())));
+			println("     Cout matiere premiere ........ " + rouge(c.matiere + " €"));
+			println("     Prix de vente ................ " + vert(c.prix + " €"));
+			println("     Taxe ......................... " + jaune(c.taxe + " %"));
+			println("     Quantite en stock ............ " + cyan(c.quantite + " unites"));
+			println("     Marge par cookie ............. " + couleurSelonSigne(marge, indicateurMarge + " " + marge + " €"));
+		}
+		println("");
+		
+		// === QUESTION ===
+		println(cyan("  ─────────────────────────────────────────────────────────────"));
+		println(gras(jaune("  ❓ QUESTION")));
+		println(cyan("  ─────────────────────────────────────────────────────────────"));
+		println("");
+		println(gras("     " + question.intitule));
+		println("");
+		println("     " + cyan("A)") + " " + question.propositions[0]);
+		println("     " + cyan("B)") + " " + question.propositions[1]);
+		println("     " + cyan("C)") + " " + question.propositions[2]);
+		println("     " + cyan("D)") + " " + question.propositions[3]);
+		print("\n\n\n\n");
+	}
+
+	// Demande a l'utilisateur de saisir sa reponse (A, B, C, D, S ou Q)
+	String demanderReponse() {
+		print(cyan("(Choisissez une reponse ") + vert("A/B/C/D") + cyan(", ") + jaune("S") + cyan(" pour Sauvegarder ou ") + rouge("Q") + cyan(" pour Quitter) > "));
+		String saisie = readString();
+		while (!estReponseValide(saisie) && !equals(majuscule(saisie), "Q") && !equals(majuscule(saisie), "S")) {
+			print(rouge("Invalide. ") + cyan("(A/B/C/D/S/Q) > "));
+			saisie = readString();
+		}
+		return majuscule(saisie);
+	}
+
+
 	// Affiche l'animation de bienvenue pendant un certain nombre de secondes
 	void afficherWelcomeScreen(int dureeSecondes) {
 		int nbFrames = 3;
@@ -196,10 +257,61 @@ class Main extends Program {
 		}
 	}
 
+	// Affiche si la reponse etait correcte ou non
+	void afficherEcranResultat(boolean succes) {
+		effacerTerminal();
+		afficherLogo();
+		if (succes) {
+			afficherFichierCouleur(bonneReponseTxt, GREEN);
+		} else {
+			afficherFichierCouleur(mauvaiseReponseTxt, RED);
+		}
+		attendreValidationUtilisateur();
+	}
+
+	// Met le programme en pause jusqu'a ce que l'utilisateur appuie sur Entree
+	void attendreValidationUtilisateur() {
+		println("Appuyez sur ENTREE pour continuer...");
+		readString();
+	}
+
+	// Efface le contenu du terminal
+	void effacerTerminal() {
+		println(CLEAR_SEQUENCE);
+	}
+
+	// Verifie si un repertoire existe dans le dossier courant
+	boolean repertoirePresentDansCourant(String nom) {
+		String[] fichiers = getAllFilesFromCurrentDirectory();
+		int idx = 0;
+		while (idx < length(fichiers)) {
+			if (equals(fichiers[idx], nom)) {
+				return true;
+			}
+			idx = idx + 1;
+		}
+		return false;
+	}
+	
+	// Reinitialise le fichier de sauvegardes (efface tout)
+	void initialiserSauvegardes() {
+		println("ATTENTION : Cela va effacer toutes les sauvegardes existantes.");
+		print("Etes-vous sur ? (O/N) > ");
+		String rep = readString();
+		if (equals(majuscule(rep), "O")) {
+			String[][] data = new String[0][NB_COLONNES_SAVE];
+			saveCSV(data, savesCsv, CSV_SEPARATOR);
+			println("Fichier de sauvegarde reinitialise.");
+		} else {
+			println("Annule.");
+		}
+		attendreValidationUtilisateur();
+	}
+
 	//endregion
 
-	// ============================== FONCTIONS PRINCIPALE DU FONCTIONNEMENT ==============================
-	//region FONCTIONS PRINCIPALE DU FONCTIONNEMENT 
+	// ============================== FONCTIONS PRINCIPALE ==============================
+	//region FONCTIONS PRINCIPALE 
 
 	// Initialise et lance une nouvelle partie avec les donnees par defaut
 	void lancerNouvellePartie(){
@@ -270,6 +382,107 @@ class Main extends Program {
 		println(rouge("  ═══════════════════════════════════════════════════"));
 		println("");
 		attendreValidationUtilisateur();
+	}
+
+	// Applique un bonus choisi par le joueur
+	void traiterBonus(Partie p) {
+		effacerTerminal();
+		afficherLogo();
+		println("");
+		println(vert("  ═══════════════════════════════════════════════════"));
+		println(vert("         🎁 CHOISISSEZ VOTRE AMELIORATION"));
+		println(vert("  ═══════════════════════════════════════════════════"));
+		println("");
+		println("  " + cyan("A)") + " Reduire cout matiere premiere " + vert("(-5%)"));
+		println("     " + jaune("→") + " Achetez moins cher vos ingredients");
+		println("");
+		println("  " + cyan("B)") + " Augmenter prix de vente " + vert("(+5%)"));
+		println("     " + jaune("→") + " Vendez vos cookies plus cher");
+		println("");
+		println("  " + cyan("C)") + " Reduire les taxes " + vert("(-1%)"));
+		println("     " + jaune("→") + " Moins d'impots a payer");
+		println("");
+		println(vert("  ───────────────────────────────────────────────────"));
+		
+		String choix = demanderReponseABC();
+		
+		CookieStat c = p.cookie;
+		println("");
+		if (equals(choix, "A")) {
+			int ancien = c.matiere;
+			c.matiere = (int)(c.matiere * 0.95);
+			println(vert("  ✓ Cout matiere premiere : ") + rouge("" + ancien + " €") + "  →  " + vert("" + c.matiere + " €"));
+		} else if (equals(choix, "B")) {
+			int ancien = c.prix;
+			c.prix = (int)(c.prix * 1.05);
+			println(vert("  ✓ Prix de vente : ") + jaune("" + ancien + " €") + "  →  " + vert("" + c.prix + " €"));
+		} else if (equals(choix, "C")) {
+			int ancien = c.taxe;
+			c.taxe = c.taxe - 1;
+			if (c.taxe < 0) c.taxe = 0;
+			println(vert("  ✓ Taxe : ") + jaune("" + ancien + " %") + "  →  " + vert("" + c.taxe + " %"));
+		}
+		println("");
+		attendreValidationUtilisateur();
+	}
+
+		// Applique un malus aleatoire au joueur
+	void traiterMalus(Partie p) {
+		effacerTerminal();
+		afficherLogo();
+		int r = (int)(random() * 3);
+		CookieStat c = p.cookie;
+		
+		println("");
+		println(rouge("  ═══════════════════════════════════════════════════"));
+		println(gras(rouge("              ⚠  MALUS APPLIQUE  ⚠")));
+		println(rouge("  ═══════════════════════════════════════════════════"));
+		println("");
+		
+		if (r == 0) {
+			int ancien = c.matiere;
+			c.matiere = (int)(c.matiere * 1.25);
+			println(rouge("  ✖ Cout matiere premiere augmente (+25%)"));
+			println("    " + jaune("" + ancien + " €") + "  →  " + rouge("" + c.matiere + " €"));
+		} else if (r == 1) {
+			int ancien = c.prix;
+			c.prix = (int)(c.prix * 0.85);
+			println(rouge("  ✖ Prix de vente reduit (-15%)"));
+			println("    " + jaune("" + ancien + " €") + "  →  " + rouge("" + c.prix + " €"));
+		} else {
+			int ancien = c.taxe;
+			c.taxe = c.taxe + 8;
+			println(rouge("  ✖ Taxes augmentees (+8%)"));
+			println("    " + jaune("" + ancien + " %") + "  →  " + rouge("" + c.taxe + " %"));
+		}
+		
+		println("");
+		println(rouge("  ═══════════════════════════════════════════════════"));
+		println("");
+		attendreValidationUtilisateur();
+	}
+
+	// Calcule les gains financiers a la fin du tour
+	/*void calculerFinDeTour(Partie p) {
+		int volume = 10000;
+		CookieStat c = p.cookie;
+		int margeUnitaire = c.prix - c.matiere;
+		int gainBrut = margeUnitaire * volume;
+		int montantTaxe = (int)(gainBrut * (c.taxe / 100.0));
+		int gainNet = gainBrut - montantTaxe;
+		
+		p.gainJour = gainNet;
+		p.argent = p.argent + gainNet;
+	}
+	*/
+	void calculerFinDeTour(Partie p) {
+		CookieStat c = p.cookie;
+		int quantiteVendu = c.quantite;
+		int gainParCookies = c.prix - c.matiere;
+		int benefice = gainParCookies * quantiteVendu - ( c.taxe / 100);
+		
+		p.gainJour = benefice;
+		p.argent = p.argent + benefice;
 	}
 
 	//endregion
@@ -409,73 +622,6 @@ class Main extends Program {
 
 	//endregion
 
-	// ============================== AFFICHAGE ==============================
-	//region AFFICHAGE
-
-
-	// Affiche les informations du tour courant (jour, argent, stats, question)
-	void afficherEcranTour(Partie partie, Question question ,CookieStat cookieStat) {
-		effacerTerminal();
-		
-		CookieStat c = partie.cookie;
-		int marge = c != null ? c.prix - c.matiere : 0;
-		String indicateurMarge = marge >= 0 ? "▲" : "▼";
-		String indicateurGain = partie.gainJour >= 0 ? "▲" : "▼";
-		
-		// === EN-TÊTE ===
-		afficherLogo();
-		println("");
-		
-		// === BARRE DE STATUT ===
-		println(jaune("  📅 JOUR " + partie.jour));
-		println(cyan("  ─────────────────────────────────────────────────────────────"));
-		println("");
-		
-		// === FINANCES (simple et clair) ===
-		println(gras(or("  💰 FINANCES")));
-		println("     Argent disponible ............ " + or(partie.argent + " €"));
-		println("     Gain du jour ................. " + couleurSelonSigne(partie.gainJour, indicateurGain + " " + partie.gainJour + " €"));
-		println("");
-		
-		// === COOKIE (simple et clair) ===
-		if (c != null) {
-			println(gras(magenta("  🍪 " + c.nom.toUpperCase())));
-			println("     Cout matiere premiere ........ " + rouge(c.matiere + " €"));
-			println("     Prix de vente ................ " + vert(c.prix + " €"));
-			println("     Taxe ......................... " + jaune(c.taxe + " %"));
-			println("     Quantite en stock ............ " + cyan(c.quantite + " unites"));
-			println("     Marge par cookie ............. " + couleurSelonSigne(marge, indicateurMarge + " " + marge + " €"));
-		}
-		println("");
-		
-		// === QUESTION ===
-		println(cyan("  ─────────────────────────────────────────────────────────────"));
-		println(gras(jaune("  ❓ QUESTION")));
-		println(cyan("  ─────────────────────────────────────────────────────────────"));
-		println("");
-		println(gras("     " + question.intitule));
-		println("");
-		println("     " + cyan("A)") + " " + question.propositions[0]);
-		println("     " + cyan("B)") + " " + question.propositions[1]);
-		println("     " + cyan("C)") + " " + question.propositions[2]);
-		println("     " + cyan("D)") + " " + question.propositions[3]);
-		print("\n\n\n\n");
-	}
-
-	// Demande a l'utilisateur de saisir sa reponse (A, B, C, D, S ou Q)
-	String demanderReponse() {
-		print(cyan("(Choisissez une reponse ") + vert("A/B/C/D") + cyan(", ") + jaune("S") + cyan(" pour Sauvegarder ou ") + rouge("Q") + cyan(" pour Quitter) > "));
-		String saisie = readString();
-		while (!estReponseValide(saisie) && !equals(majuscule(saisie), "Q") && !equals(majuscule(saisie), "S")) {
-			print(rouge("Invalide. ") + cyan("(A/B/C/D/S/Q) > "));
-			saisie = readString();
-		}
-		return majuscule(saisie);
-	}
-
-
-	//endregion
-
 	// ============================== CONTROLE DE SAISIE ==============================
 	//region CONTROLE DE SAISIE
 
@@ -562,87 +708,97 @@ class Main extends Program {
 		return res;
 	}
 
-//endregion
 
-	// ============================== test ==============================
-	//region Tests
-
-	void test_majuscule(){
-		assertEquals( "A" , majuscule("a"));
-		assertEquals( "c" , majuscule("t"));
-		assertEquals( "A" , majuscule("A"));
+	// Affiche le prompt de saisie standard
+	void afficherPromptChoix() {
+		print("\n" + blanc("Votre choix > "));
 	}
 
-	//endregion
-
-	// ============================== AFFICHAGE ==============================
-	//region AFFICHAGE
-
-	// Affiche si la reponse etait correcte ou non
-	void afficherEcranResultat(boolean succes) {
-		effacerTerminal();
-		afficherLogo();
-		if (succes) {
-			afficherFichierCouleur(bonneReponseTxt, GREEN);
-		} else {
-			afficherFichierCouleur(mauvaiseReponseTxt, RED);
+	// Lit un entier saisi par l'utilisateur en verifiant qu'il est dans l'intervalle
+	int lireEntierDansIntervalle(int min, int max) {
+		boolean valide = false;
+		int resultat = min;
+		afficherPromptChoix();
+		while (!valide) {
+			String entree = readString();
+			if (estTexteNombre(entree)) {
+				int valeur = entierDepuisTexte(entree);
+				if (valeur >= min && valeur <= max) {
+					resultat = valeur;
+					valide = true;
+				}
+			}
+			if (!valide) {
+				print(rouge("Choix invalide, recommencez : "));
+			}
 		}
-		attendreValidationUtilisateur();
+		return resultat;
 	}
 
-	//endregion
-
-	// ============================== FONCTION PRINCIPALE ==============================
-	//region FONCTION PRINCIPALE
-
-	// Applique un bonus choisi par le joueur
-	void traiterBonus(Partie p) {
-		effacerTerminal();
-		afficherLogo();
-		println("");
-		println(vert("  ═══════════════════════════════════════════════════"));
-		println(vert("         🎁 CHOISISSEZ VOTRE AMELIORATION"));
-		println(vert("  ═══════════════════════════════════════════════════"));
-		println("");
-		println("  " + cyan("A)") + " Reduire cout matiere premiere " + vert("(-5%)"));
-		println("     " + jaune("→") + " Achetez moins cher vos ingredients");
-		println("");
-		println("  " + cyan("B)") + " Augmenter prix de vente " + vert("(+5%)"));
-		println("     " + jaune("→") + " Vendez vos cookies plus cher");
-		println("");
-		println("  " + cyan("C)") + " Reduire les taxes " + vert("(-1%)"));
-		println("     " + jaune("→") + " Moins d'impots a payer");
-		println("");
-		println(vert("  ───────────────────────────────────────────────────"));
-		
-		String choix = demanderReponseABC();
-		
-		CookieStat c = p.cookie;
-		println("");
-		if (equals(choix, "A")) {
-			int ancien = c.matiere;
-			c.matiere = (int)(c.matiere * 0.95);
-			println(vert("  ✓ Cout matiere premiere : ") + rouge("" + ancien + " €") + "  →  " + vert("" + c.matiere + " €"));
-		} else if (equals(choix, "B")) {
-			int ancien = c.prix;
-			c.prix = (int)(c.prix * 1.05);
-			println(vert("  ✓ Prix de vente : ") + jaune("" + ancien + " €") + "  →  " + vert("" + c.prix + " €"));
-		} else if (equals(choix, "C")) {
-			int ancien = c.taxe;
-			c.taxe = c.taxe - 1;
-			if (c.taxe < 0) c.taxe = 0;
-			println(vert("  ✓ Taxe : ") + jaune("" + ancien + " %") + "  →  " + vert("" + c.taxe + " %"));
+	// Verifie si une chaine de caracteres represente un nombre entier
+	boolean estTexteNombre(String valeur) {
+		if (length(valeur) == 0) {
+			return false;
 		}
-		println("");
-		attendreValidationUtilisateur();
+		int idx = 0;
+		if (equals(substring(valeur, 0, 1), "-")) {
+			if (length(valeur) == 1) {
+				return false;
+			}
+			idx = 1;
+		}
+		while (idx < length(valeur)) {
+			String caractere = substring(valeur, idx, idx + 1);
+			if (!estChiffre(caractere)) {
+				return false;
+			}
+			idx = idx + 1;
+		}
+		return true;
 	}
 
-	//endregion
+	// Verifie si un caractere est un chiffre
+	//return equals(caractere, "0") || equals(caractere, "1") || equals(caractere, "2") || equals(caractere, "3") || equals(caractere, "4") || equals(caractere, "5") || equals(caractere, "6") || equals(caractere, "7") || equals(caractere, "8") || equals(caractere, "9");
+	boolean estChiffre(String caractere){
+		if(length(caractere) == 1){
+			char c = charAt(caractere, 0);
+			if(c >= '0' && c <= '9'){
+				return true;
+			}
+		}
+		return false;
+	}
 
-	// ============================== CONTROLE DE SAISIE ==============================
-	//region CONTROLE DE SAISIE
+	// Convertit une chaine de caracteres en entier
+	int entierDepuisTexte(String valeur) {
+		int signe = 1;
+		int idx = 0;
+		if (length(valeur) > 0 && equals(substring(valeur, 0, 1), "-")) {
+			signe = -1;
+			idx = 1;
+		}
+		int resultat = 0;
+		while (idx < length(valeur)) {
+			int chiffre = chiffreDepuisTexte(substring(valeur, idx, idx + 1));
+			resultat = resultat * 10 + chiffre;
+			idx = idx + 1;
+		}
+		return resultat * signe;
+	}
 
-	// Demande a l'utilisateur de choisir entre A, B ou C
+	// Convertit un caractere chiffre en sa valeur entiere
+	int chiffreDepuisTexte(String caractere) {
+		String chiffres = "0123456789";
+		int idx = 0;
+		while (idx < length(chiffres)) {
+			if (equals(substring(chiffres, idx, idx + 1), caractere)) {
+				return idx;
+			}
+			idx = idx + 1;
+		}
+		return 9;
+	}
+
 	String demanderReponseABC() {
 		print(cyan("(Choisissez ") + vert("A/B/C") + cyan(") > "));
 		String s = readString();
@@ -651,70 +807,6 @@ class Main extends Program {
 			s = readString();
 		}
 		return majuscule(s);
-	}
-
-	//endregion
-
-	// ============================== FONCTION PRINCIPALE ==============================
-	//region FONCTION PRINCIPALE
-
-	// Applique un malus aleatoire au joueur
-	void traiterMalus(Partie p) {
-		effacerTerminal();
-		afficherLogo();
-		int r = (int)(random() * 3);
-		CookieStat c = p.cookie;
-		
-		println("");
-		println(rouge("  ═══════════════════════════════════════════════════"));
-		println(gras(rouge("              ⚠  MALUS APPLIQUE  ⚠")));
-		println(rouge("  ═══════════════════════════════════════════════════"));
-		println("");
-		
-		if (r == 0) {
-			int ancien = c.matiere;
-			c.matiere = (int)(c.matiere * 1.25);
-			println(rouge("  ✖ Cout matiere premiere augmente (+25%)"));
-			println("    " + jaune("" + ancien + " €") + "  →  " + rouge("" + c.matiere + " €"));
-		} else if (r == 1) {
-			int ancien = c.prix;
-			c.prix = (int)(c.prix * 0.85);
-			println(rouge("  ✖ Prix de vente reduit (-15%)"));
-			println("    " + jaune("" + ancien + " €") + "  →  " + rouge("" + c.prix + " €"));
-		} else {
-			int ancien = c.taxe;
-			c.taxe = c.taxe + 8;
-			println(rouge("  ✖ Taxes augmentees (+8%)"));
-			println("    " + jaune("" + ancien + " %") + "  →  " + rouge("" + c.taxe + " %"));
-		}
-		
-		println("");
-		println(rouge("  ═══════════════════════════════════════════════════"));
-		println("");
-		attendreValidationUtilisateur();
-	}
-
-	// Calcule les gains financiers a la fin du tour
-	/*void calculerFinDeTour(Partie p) {
-		int volume = 10000;
-		CookieStat c = p.cookie;
-		int margeUnitaire = c.prix - c.matiere;
-		int gainBrut = margeUnitaire * volume;
-		int montantTaxe = (int)(gainBrut * (c.taxe / 100.0));
-		int gainNet = gainBrut - montantTaxe;
-		
-		p.gainJour = gainNet;
-		p.argent = p.argent + gainNet;
-	}
-	*/
-	void calculerFinDeTour(Partie p) {
-		CookieStat c = p.cookie;
-		int quantiteVendu = c.quantite;
-		int gainParCookies = c.prix - c.matiere;
-		int benefice = gainParCookies * quantiteVendu - ( c.taxe / 100);
-		
-		p.gainJour = benefice;
-		p.argent = p.argent + benefice;
 	}
 
 	//endregion
@@ -883,146 +975,6 @@ class Main extends Program {
 
 	//endregion
 
-	// ============================== CONTROLE DE SAISIE ==============================
-	//region CONTROLE DE SAISIE
-
-	// Affiche le prompt de saisie standard
-	void afficherPromptChoix() {
-		print("\n" + blanc("Votre choix > "));
-	}
-
-	// Lit un entier saisi par l'utilisateur en verifiant qu'il est dans l'intervalle
-	int lireEntierDansIntervalle(int min, int max) {
-		boolean valide = false;
-		int resultat = min;
-		afficherPromptChoix();
-		while (!valide) {
-			String entree = readString();
-			if (estTexteNombre(entree)) {
-				int valeur = entierDepuisTexte(entree);
-				if (valeur >= min && valeur <= max) {
-					resultat = valeur;
-					valide = true;
-				}
-			}
-			if (!valide) {
-				print(rouge("Choix invalide, recommencez : "));
-			}
-		}
-		return resultat;
-	}
-
-	// Verifie si une chaine de caracteres represente un nombre entier
-	boolean estTexteNombre(String valeur) {
-		if (length(valeur) == 0) {
-			return false;
-		}
-		int idx = 0;
-		if (equals(substring(valeur, 0, 1), "-")) {
-			if (length(valeur) == 1) {
-				return false;
-			}
-			idx = 1;
-		}
-		while (idx < length(valeur)) {
-			String caractere = substring(valeur, idx, idx + 1);
-			if (!estChiffre(caractere)) {
-				return false;
-			}
-			idx = idx + 1;
-		}
-		return true;
-	}
-
-	// Verifie si un caractere est un chiffre
-	//return equals(caractere, "0") || equals(caractere, "1") || equals(caractere, "2") || equals(caractere, "3") || equals(caractere, "4") || equals(caractere, "5") || equals(caractere, "6") || equals(caractere, "7") || equals(caractere, "8") || equals(caractere, "9");
-	boolean estChiffre(String caractere){
-		if(length(caractere) == 1){
-			char c = charAt(caractere, 0);
-			if(c >= '0' && c <= '9'){
-				return true;
-			}
-		}
-		return false;
-	}
-
-	// Convertit une chaine de caracteres en entier
-	int entierDepuisTexte(String valeur) {
-		int signe = 1;
-		int idx = 0;
-		if (length(valeur) > 0 && equals(substring(valeur, 0, 1), "-")) {
-			signe = -1;
-			idx = 1;
-		}
-		int resultat = 0;
-		while (idx < length(valeur)) {
-			int chiffre = chiffreDepuisTexte(substring(valeur, idx, idx + 1));
-			resultat = resultat * 10 + chiffre;
-			idx = idx + 1;
-		}
-		return resultat * signe;
-	}
-
-	// Convertit un caractere chiffre en sa valeur entiere
-	int chiffreDepuisTexte(String caractere) {
-		String chiffres = "0123456789";
-		int idx = 0;
-		while (idx < length(chiffres)) {
-			if (equals(substring(chiffres, idx, idx + 1), caractere)) {
-				return idx;
-			}
-			idx = idx + 1;
-		}
-		return 9;
-	}
-
-
-	//endregion
-
-	// ============================== AFFICHAGE ==============================
-	//region AFFICHAGE
-
-	// Met le programme en pause jusqu'a ce que l'utilisateur appuie sur Entree
-	void attendreValidationUtilisateur() {
-		println("Appuyez sur ENTREE pour continuer...");
-		readString();
-	}
-
-	// Efface le contenu du terminal
-	void effacerTerminal() {
-		println(CLEAR_SEQUENCE);
-	}
-
-	// Verifie si un repertoire existe dans le dossier courant
-	boolean repertoirePresentDansCourant(String nom) {
-		String[] fichiers = getAllFilesFromCurrentDirectory();
-		int idx = 0;
-		while (idx < length(fichiers)) {
-			if (equals(fichiers[idx], nom)) {
-				return true;
-			}
-			idx = idx + 1;
-		}
-		return false;
-	}
-	
-	// Reinitialise le fichier de sauvegardes (efface tout)
-	void initialiserSauvegardes() {
-		println("ATTENTION : Cela va effacer toutes les sauvegardes existantes.");
-		print("Etes-vous sur ? (O/N) > ");
-		String rep = readString();
-		if (equals(majuscule(rep), "O")) {
-			String[][] data = new String[0][NB_COLONNES_SAVE];
-			saveCSV(data, savesCsv, CSV_SEPARATOR);
-			println("Fichier de sauvegarde reinitialise.");
-		} else {
-			println("Annule.");
-		}
-		attendreValidationUtilisateur();
-	}
-
-	//endregion
-
 	// ============================== AUTRE ==============================
 	//region AUTRE
 
@@ -1048,9 +1000,17 @@ class Main extends Program {
 		return OptionMenu.QUITTER;
 	}
 	//endregion
-	// ============================== Tests ==============================
-	//endregion
 
+	// ============================== TESTS ==============================
+	// region TESTS
+	
+	void test_majuscule(){
+		assertEquals( "A" , majuscule("a"));
+		assertEquals( "c" , majuscule("t"));
+		assertEquals( "A" , majuscule("A"));
+	
+	}
+	// endregion
 
 }
 
