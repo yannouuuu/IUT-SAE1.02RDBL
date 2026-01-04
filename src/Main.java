@@ -354,7 +354,7 @@ class Main extends Program {
 				} else {
 					traiterMalus(partie);
 				}
-				
+		
 				calculerFinDeTour(partie);
 				
 				if (estEnFaillite(partie)) {
@@ -423,6 +423,7 @@ class Main extends Program {
 			println(vert("  ✓ Taxe : ") + jaune("" + ancien + " %") + "  →  " + vert("" + c.taxe + " %"));
 		}
 		println("");
+		c.quantite = c.quantite + 8; 
 		attendreValidationUtilisateur();
 	}
 
@@ -459,6 +460,7 @@ class Main extends Program {
 		println("");
 		println(rouge("  ═══════════════════════════════════════════════════"));
 		println("");
+		c.quantite = c.quantite + 1;
 		attendreValidationUtilisateur();
 	}
 
@@ -1010,6 +1012,8 @@ class Main extends Program {
 		assertEquals( "A" , majuscule("A"));
 	
 	}
+
+	//void test_
 	// endregion
 
 }
