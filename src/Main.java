@@ -1034,7 +1034,6 @@ class Main extends Program {
 	
 	void test_majuscule(){
 		assertEquals( "A" , majuscule("a"));
-<<<<<<< HEAD
 		assertEquals( "t" , majuscule("t"));
 		assertEquals( "s s" , majuscule("s s"));
 		assertEquals( "" , majuscule(""));
@@ -1146,11 +1145,6 @@ class Main extends Program {
 		assertEquals( "C001" , p.cookie.id);
 	}
 
-=======
-		assertEquals( "A" , majuscule("A"));
-	
-	}
-
 	void test_estReponseValide() {
 
         assertEquals(true,estReponseValide("A"));
@@ -1181,13 +1175,6 @@ class Main extends Program {
 
     }
 
-	void test_estTexteNombre(){
-        assertEquals(true , estTexteNombre("2"));
-        assertEquals(false , estTexteNombre("A"));
-        assertEquals(false , estTexteNombre("jhad"));
-        assertEquals(true , estTexteNombre("23"));
-    }
-
     void test_estChiffre(){
         assertEquals(true , estChiffre("1"));
         assertEquals(true , estChiffre("5"));
@@ -1208,7 +1195,6 @@ class Main extends Program {
         assertEquals(5 , entierDepuisTexte("5"));
         assertEquals(0 , entierDepuisTexte("a"));
     }
->>>>>>> 205b8f1080dd950b463c1e11a04c1324b0106e35
 	// endregion
 
 }
