@@ -671,11 +671,12 @@ class Main extends Program {
 	// Convertit une lettre (A, B, C, D) en indice (0, 1, 2, 3)
 	int indiceDepuisLettre(String lettre) {
 		int indice = 3;
-		if (equals(lettre, "A")) {
+		char L = charAt(lettre,0);
+		if( L == 'A' || L == 'a'){
 			indice = 0;
-		} else if (equals(lettre, "B")) {
+		} else if ( L == 'B' || L == 'b') {
 			indice = 1;
-		} else if (equals(lettre, "C")) {
+		} else if ( L == 'C' || L == 'c') {
 			indice = 2;
 		}
 		return indice;
@@ -789,6 +790,25 @@ class Main extends Program {
 	}
 
 	// Convertit un caractere chiffre en sa valeur entiere
+	/*int chiffreDepuisTexte(String caractere) {
+		char lettre = charAt(caractere, 0 );
+		int valeur = (int)lettre - 48;
+
+		println("lettre " + lettre);
+		println("val " + valeur);
+
+		if( valeur >= 1 && valeur <= 9)
+			return valeur; 
+		else if(valeur + 32 >=  65 && valeur+32 <= 90)
+			println("estpasser " + (valeur + 32));
+			println("avant18 " + valeur);
+			valeur = valeur -18;
+			println("valeur " + valeur);
+		else
+			return 0;
+		return;
+	}*/
+
 	int chiffreDepuisTexte(String caractere) {
 		String chiffres = "0123456789";
 		int idx = 0;
@@ -1008,12 +1028,67 @@ class Main extends Program {
 	
 	void test_majuscule(){
 		assertEquals( "A" , majuscule("a"));
-		assertEquals( "c" , majuscule("t"));
 		assertEquals( "A" , majuscule("A"));
 	
 	}
 
-	//void test_
+	void test_estReponseValide() {
+
+        assertEquals(true,estReponseValide("A"));
+        assertEquals(true,estReponseValide("B"));
+        assertEquals(true,estReponseValide("c"));
+        assertEquals(false,estReponseValide("Z"));
+        assertEquals(false,estReponseValide("x"));
+        assertEquals(false,estReponseValide("1"));
+        assertEquals(false,estReponseValide("!"));
+    }
+
+	void test_verifierReponse(){
+        assertEquals(true, verifierReponse("a","a"));
+        assertEquals(false, verifierReponse("a","c"));
+        assertEquals(false, verifierReponse("/","c"));
+    }
+
+	void test_indiceDepuisLettre(){
+        assertEquals(0 , indiceDepuisLettre("a"));
+        assertEquals(3 , indiceDepuisLettre("D"));
+        assertEquals(3 , indiceDepuisLettre("Z"));
+    }
+
+	   void test_lettreDepuisIndice(){
+        assertEquals("A" , lettreDepuisIndice(0));
+        assertEquals("C" , lettreDepuisIndice(2));
+        assertEquals("D" , lettreDepuisIndice(199));
+
+    }
+
+	void test_estTexteNombre(){
+        assertEquals(true , estTexteNombre("2"));
+        assertEquals(false , estTexteNombre("A"));
+        assertEquals(false , estTexteNombre("jhad"));
+        assertEquals(true , estTexteNombre("23"));
+    }
+
+    void test_estChiffre(){
+        assertEquals(true , estChiffre("1"));
+        assertEquals(true , estChiffre("5"));
+        assertEquals(false , estChiffre("A"));
+        assertEquals(false , estChiffre("b"));
+
+    }
+
+
+	void test_chiffreDepuisTexte(){
+        assertEquals(0 , chiffreDepuisTexte("a"));
+        assertEquals(5 , chiffreDepuisTexte("E"));
+        assertEquals(1 , chiffreDepuisTexte("1"));
+    }
+
+	void test_entierDepuisTexte(){
+        assertEquals(1 , entierDepuisTexte("1"));
+        assertEquals(5 , entierDepuisTexte("5"));
+        assertEquals(0 , entierDepuisTexte("a"));
+    }
 	// endregion
 
 }
