@@ -1,0 +1,6 @@
+Choisissez une option :
+1. Nouvelle partie
+2. Charger une partie
+3. Afficher les regles du jeu
+4. Reinitialiser les sauvegardes
+5. Quitter
