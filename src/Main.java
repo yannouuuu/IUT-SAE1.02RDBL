@@ -20,7 +20,7 @@ class Main extends Program {
 	String bonneReponseTxt;
 	String mauvaiseReponseTxt;
 	String choixCookieTxt;
-	String welcomeScreenDir;
+	String ecranBienvenueDir;
 
 	// ============================== COULEURS ==============================
 	//region COULEURS
@@ -80,7 +80,7 @@ class Main extends Program {
 	// Point d'entree principal du programme
 	void algorithm() {
 		initialiserCheminsRessources();
-		afficherWelcomeScreen(4);
+		afficherEcranBienvenue(4);
 		boucleMenuPrincipal();
 	}
 
@@ -99,7 +99,7 @@ class Main extends Program {
 		bonneReponseTxt = ressourcesPrefix + "bonnereponse.txt";
 		mauvaiseReponseTxt = ressourcesPrefix + "mauvaisereponse.txt";
 		choixCookieTxt = ressourcesPrefix + "choixcookie.txt";
-		welcomeScreenDir = ressourcesPrefix + "welcomescreen/";
+		ecranBienvenueDir = ressourcesPrefix + "ecranbienvenue/";
 	}
 
 
@@ -181,7 +181,15 @@ class Main extends Program {
 		effacerTerminal();
 		
 		CookieStat c = partie.cookie;
-		int marge = c != null ? c.prix - c.matiere : 0;
+		int marge;
+
+		if (c != null) {
+			marge = c.prix - c.matiere;
+		} else {
+			marge = 0;
+		}
+
+
 		String indicateurMarge = marge >= 0 ? "▲" : "▼";
 		String indicateurGain = partie.gainJour >= 0 ? "▲" : "▼";
 		
@@ -238,20 +246,20 @@ class Main extends Program {
 
 
 	// Affiche l'animation de bienvenue pendant un certain nombre de secondes
-	void afficherWelcomeScreen(int dureeSecondes) {
-		int nbFrames = 3;
+	void afficherEcranBienvenue(int dureeSecondes) {
+		int nbImages = 3;
 		int delaiMs = 300;
-		int iterations = (dureeSecondes * 1000) / (nbFrames * delaiMs);
+		int iterations = (dureeSecondes * 1000) / (nbImages * delaiMs);
 		int frameActuelle = 1;
 		
-		for (int i = 0; i < iterations * nbFrames; i++) {
+		for (int i = 0; i < iterations * nbImages; i++) {
 			effacerTerminal();
-			String cheminFrame = welcomeScreenDir + "frame" + frameActuelle + ".txt";
+			String cheminFrame = ecranBienvenueDir + "frame" + frameActuelle + ".txt";
 			afficherFichierCouleur(cheminFrame, GOLD);
 			sleep(delaiMs);
 			
 			frameActuelle = frameActuelle + 1;
-			if (frameActuelle > nbFrames) {
+			if (frameActuelle > nbImages) {
 				frameActuelle = 1;
 			}
 		}
@@ -650,7 +658,7 @@ class Main extends Program {
 		int indiceBonne = indiceDepuisLettre(question.bonneReponse);
 		String bonneReponseTexte = props[indiceBonne];
 		
-		// Melange de Fisher-Yates
+		// Melange
 		for (int i = length(props) - 1; i > 0; i--) {
 			int j = (int)(random() * (i + 1));
 			String temp = props[i];
@@ -697,16 +705,14 @@ class Main extends Program {
 	// Convertit une chaine en majuscule (pour les lettres a, b, c, d, q, s)
 	String majuscule(String s) {
 		String res = s;
-		if (length(s) > 0) {
-			String c = substring(s, 0, 1);
-			if (equals(c, "a")) res = "A";
-			else if (equals(c, "b")) res = "B";
-			else if (equals(c, "c")) res = "C";
-			else if (equals(c, "d")) res = "D";
-			else if (equals(c, "q")) res = "Q";
-			else if (equals(c, "s")) res = "S";
-			else res = c;
-		}
+	
+		if (equals(res, "a")) res = "A";
+		else if (equals(res, "b")) res = "B";
+		else if (equals(res, "c")) res = "C";
+		else if (equals(res, "d")) res = "D";
+		else if (equals(res, "q")) res = "Q";
+		else if (equals(res, "s")) res = "S";
+		
 		return res;
 	}
 
@@ -1008,12 +1014,117 @@ class Main extends Program {
 	
 	void test_majuscule(){
 		assertEquals( "A" , majuscule("a"));
-		assertEquals( "c" , majuscule("t"));
-		assertEquals( "A" , majuscule("A"));
-	
+		assertEquals( "t" , majuscule("t"));
+		assertEquals( "s s" , majuscule("s s"));
+		assertEquals( "" , majuscule(""));
+		assertEquals( "   " , majuscule("   "));
 	}
 
-	//void test_
+	void test_estTexteNombre(){
+		assertEquals( true , estTexteNombre("1234"));
+		assertEquals( false , estTexteNombre("12a34"));
+		assertEquals( true , estTexteNombre("-567"));
+		assertEquals( false , estTexteNombre("-"));
+		assertEquals( false , estTexteNombre(""));
+	}
+
+	void test_chargerCookies(){
+		initialiserCheminsRessources();
+		CookieStat[] cookies = chargerCookies();
+		assertTrue( length(cookies) > 0 );
+		assertEquals( "C001" , cookies[0].id);
+		assertEquals( "Cookie Classique" , cookies[0].nom);
+	}
+
+	void test_chargerQuestions(){
+		initialiserCheminsRessources();
+		Question[] questions = chargerQuestions();
+		assertTrue( length(questions) > 0 );
+		assertEquals( "Q001" , questions[0].id);
+		assertEquals( "Quel indicateur est liée à la rentabilée quotidienne de votre biscuiterie ?" , questions[0].intitule);
+	}
+
+	void test_chargerQuestionDepuisLigne(){
+		initialiserCheminsRessources();
+		CSVFile table = loadCSV(questionsCsv, CSV_SEPARATOR);
+		Question q = creerQuestionDepuisLigne(table, 1);
+		assertEquals( "Q001" , q.id);
+		assertEquals( "Quel indicateur est liée à la rentabilée quotidienne de votre biscuiterie ?" , q.intitule);
+		assertEquals( "B" , q.bonneReponse);
+	}
+
+	void test_calculerMarge(){
+		CookieStat c = new CookieStat();
+		c.matiere = 2;
+		c.prix = 5;
+		c.taxe = 10;
+		int marge = calculerMarge(c);
+		assertEquals( 3 , marge);
+	}
+
+	void test_formaterMarge(){
+		assertEquals( "+5" , formaterMarge(5));
+		assertEquals( "-3" , formaterMarge(-3));
+		assertEquals( "+0" , formaterMarge(0));
+	}
+
+	void test_creerCokkieDepuisLigne(){
+		initialiserCheminsRessources();
+		CSVFile table = loadCSV(cookiesCsv, CSV_SEPARATOR);
+		CookieStat c = creerCookieDepuisLigne(table, 1);
+		assertEquals( "C001" , c.id);
+		assertEquals( "Cookie Classique" , c.nom);
+		assertEquals( 20 , c.matiere);
+		assertEquals( 25 , c.prix);
+		assertEquals( 15 , c.taxe);
+		assertEquals( 15 , c.quantite);
+	}
+
+	void test_copierCookie(){
+		CookieStat source = new CookieStat();
+		source.id = "C123";
+		source.nom = "Cookie Test";
+		source.matiere = 10;
+		source.prix = 15;
+		source.taxe = 5;
+		source.quantite = 20;
+
+		CookieStat copie = copierCookie(source);
+		assertEquals( "C123" , copie.id);
+		assertEquals( "Cookie Test" , copie.nom);
+		assertEquals( 10 , copie.matiere);
+		assertEquals( 15 , copie.prix);
+		assertEquals( 5 , copie.taxe);
+		assertEquals( 20 , copie.quantite);
+	}
+
+	void test_creerQuestionDepuisLigne(){
+		initialiserCheminsRessources();
+		CSVFile table = loadCSV(questionsCsv, CSV_SEPARATOR);
+		Question q = creerQuestionDepuisLigne(table, 1);
+		assertEquals( "Q001" , q.id);
+		assertEquals( "Quel indicateur est liée à la rentabilée quotidienne de votre biscuiterie ?" , q.intitule);
+		assertEquals( "B" , q.bonneReponse);
+	}
+
+	void test_nouvellePartieInitiale(){
+		CookieStat[] cookies = new CookieStat[1];
+		cookies[0] = new CookieStat();
+		cookies[0].id = "C001";
+		cookies[0].nom = "Cookie Test";
+		cookies[0].matiere = 10;
+		cookies[0].prix = 15;
+		cookies[0].taxe = 5;
+		cookies[0].quantite = 20;
+
+		Partie p = nouvellePartieInitiale(cookies);
+		assertEquals( 1 , p.jour);
+		assertEquals( ARGENT_DEPART , p.argent);
+		assertEquals( GAIN_DEPART , p.gainJour);
+		assertEquals( 5 , p.quantite);
+		assertEquals( "C001" , p.cookie.id);
+	}
+
 	// endregion
 
 }
