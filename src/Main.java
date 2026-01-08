@@ -1215,7 +1215,33 @@ class Main extends Program {
     }
 
 	
-	// void test_nouvellePartieAvecCookie(){}
+	void test_nouvellePartieAvecCookie(){
+		Partie partie = new Partie();
+		CookieStat cookie = new CookieStat();
+		partie.jour = 1;
+		partie.argent = 150;
+		partie.gainJour = 30;
+		partie.quantite = 6;
+		partie.cookie = copierCookie(cookie);
+		assertEquals( 1, nouvellePartieAvecCookie(cookie).jour);
+		assertEquals( ARGENT_DEPART , nouvellePartieAvecCookie(cookie).argent);
+	}
+
+	void test_afficherMenuSelectionCookies(){
+		initialiserCheminsRessources();
+		CookieStat[] cookies = chargerCookies();
+		int choix = afficherMenuSelectionCookie(cookies);
+		assertTrue( choix >= 0 && choix <= length(cookies) );
+	}
+	
+	void test_csvVersTableau(){
+		initialiserCheminsRessources();
+		CSVFile csv = loadCSV(savesCsv, CSV_SEPARATOR);
+		String[][] data = csvVersTableau(csv);
+		assertEquals( rowCount(csv) , length(data) );
+		assertEquals( NB_COLONNES_SAVE , length(data[0]) );
+	}
+
 	// endregion
 
 }
