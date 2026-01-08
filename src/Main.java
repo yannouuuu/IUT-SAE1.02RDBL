@@ -546,9 +546,19 @@ class Main extends Program {
 	}
 
 	// Demande a l'utilisateur de saisir un nom pour sa sauvegarde
-	String demanderNomSauvegarde() {
+	String demanderNomSauvegarde(){
+		boolean valide = false; 
 		print(cyan("Entrez le nom de votre sauvegarde : "));
-		return readString();
+		String rep = readString();
+		while( valide != true){
+			if( estAccepatable(rep) != true ){
+				println(rouge("le nom doit faire moins de 15 caraxteres "));
+				print(cyan("Entrez le nom de votre sauvegarde : "));
+				rep = readString();
+			}else
+				valide = true ; 
+		}
+		return rep;
 	}
 
 	// Remplit une ligne du tableau de sauvegarde avec les donnees de la partie
@@ -654,6 +664,20 @@ class Main extends Program {
 
 	// ============================== CONTROLE DE SAISIE ==============================
 	//region CONTROLE DE SAISIE
+
+	boolean estAccepatable( String s ){
+		char lettre ='a';
+		if(length(s) <= 15 && length(s) >= 2){
+			for( int taille = 0 ; taille < length(s) ; taille++){
+				lettre = charAt(s , taille );
+				if(lettre == ';'){
+					return false;
+				}
+			}
+			return true;
+		}
+		return false;
+	}
 
 	// Verifie si la saisie correspond a une reponse valide (A, B, C ou D)
 	boolean estReponseValide(String s) {
