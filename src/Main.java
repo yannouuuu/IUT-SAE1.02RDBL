@@ -796,26 +796,22 @@ class Main extends Program {
 	}
 
 	// Convertit un caractere chiffre en sa valeur entiere
-	/*int chiffreDepuisTexte(String caractere) {
-		char lettre = charAt(caractere, 0 );
-		int valeur = (int)lettre - 48;
-
-		println("lettre " + lettre);
-		println("val " + valeur);
-
-		if( valeur >= 1 && valeur <= 9)
-			return valeur; 
-		else if(valeur + 32 >=  65 && valeur+32 <= 90)
-			println("estpasser " + (valeur + 32));
-			println("avant18 " + valeur);
-			valeur = valeur -18;
-			println("valeur " + valeur);
-		else
-			return 0;
-		return;
-	}*/
-
 	int chiffreDepuisTexte(String caractere) {
+		char lettre = charAt(caractere, 0 );
+		int valeur = (int)lettre - 48; // (0 = 48)
+
+		// Si c'est un chiffre (0-9)
+		if( valeur >= 0 && valeur <= 9) {
+			return valeur; 
+		// Si c'est une lettre majuscule (A=17-16=1, ... Z=42-16=26)
+		} else if (valeur >= 17 && valeur <= 42) {
+			return valeur - 16;
+		} else {
+			return 0;
+		}
+	}
+
+	/* int chiffreDepuisTexte(String caractere) {
 		String chiffres = "0123456789";
 		int idx = 0;
 		while (idx < length(chiffres)) {
@@ -825,7 +821,7 @@ class Main extends Program {
 			idx = idx + 1;
 		}
 		return 9;
-	}
+	}*/
 
 	String demanderReponseABC() {
 		print(cyan("(Choisissez ") + vert("A/B/C") + cyan(") > "));
@@ -1146,7 +1142,6 @@ class Main extends Program {
 	}
 
 	void test_estReponseValide() {
-
         assertEquals(true,estReponseValide("A"));
         assertEquals(true,estReponseValide("B"));
         assertEquals(true,estReponseValide("c"));
@@ -1168,11 +1163,10 @@ class Main extends Program {
         assertEquals(3 , indiceDepuisLettre("Z"));
     }
 
-	   void test_lettreDepuisIndice(){
+	void test_lettreDepuisIndice(){
         assertEquals("A" , lettreDepuisIndice(0));
         assertEquals("C" , lettreDepuisIndice(2));
         assertEquals("D" , lettreDepuisIndice(199));
-
     }
 
     void test_estChiffre(){
@@ -1180,14 +1174,13 @@ class Main extends Program {
         assertEquals(true , estChiffre("5"));
         assertEquals(false , estChiffre("A"));
         assertEquals(false , estChiffre("b"));
-
     }
-
 
 	void test_chiffreDepuisTexte(){
         assertEquals(0 , chiffreDepuisTexte("a"));
         assertEquals(5 , chiffreDepuisTexte("E"));
         assertEquals(1 , chiffreDepuisTexte("1"));
+		assertEquals(6 , chiffreDepuisTexte("F"));
     }
 
 	void test_entierDepuisTexte(){
@@ -1195,6 +1188,8 @@ class Main extends Program {
         assertEquals(5 , entierDepuisTexte("5"));
         assertEquals(0 , entierDepuisTexte("a"));
     }
+	
+	// void test_nouvellePartieAvecCookie(){}
 	// endregion
 
 }
