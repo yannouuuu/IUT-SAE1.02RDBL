@@ -3,6 +3,7 @@ class Partie {
 	int argent;
 	int gainJour;
 	int quantite;
+	int popularite;
 	CookieStat cookie;
 	
 }

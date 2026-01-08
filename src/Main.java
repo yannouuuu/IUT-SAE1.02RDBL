@@ -7,7 +7,7 @@ class Main extends Program {
 	final char CSV_SEPARATOR = ';';
 	final int ARGENT_DEPART = 150;
 	final int GAIN_DEPART = 30;
-	final int NB_COLONNES_SAVE = 10; // nombre de colonnes utilisées dans le fichier de sauvegarde CSV
+	final int NB_COLONNES_SAVE = 11; // nombre de colonnes utilisées dans le fichier de sauvegarde CSV
 	
 	String ressourcesPrefix = "resources/";
 	String questionsCsv;
@@ -215,6 +215,7 @@ class Main extends Program {
 			println("     Prix de vente ................ " + vert(c.prix + " €"));
 			println("     Taxe ......................... " + jaune(c.taxe + " %"));
 			println("     Quantite en stock ............ " + cyan(c.quantite + " unites"));
+			println("     Popularité ................... " + or(c.popularite + " %"));
 			println("     Marge par cookie ............. " + couleurSelonSigne(marge, indicateurMarge + " " + marge + " €"));
 		}
 		println("");
@@ -410,6 +411,9 @@ class Main extends Program {
 		println("  " + cyan("C)") + " Reduire les taxes " + vert("(-1%)"));
 		println("     " + jaune("→") + " Moins d'impots a payer");
 		println("");
+		println("  " + cyan("D)") + " Augmenter la popularitée " + vert("(+3%)"));
+		println("     " + jaune("→") + " Vender plus !");
+		println("");
 		println(vert("  ───────────────────────────────────────────────────"));
 		
 		String choix = demanderReponseABC();
@@ -429,9 +433,13 @@ class Main extends Program {
 			c.taxe = c.taxe - 1;
 			if (c.taxe < 0) c.taxe = 0;
 			println(vert("  ✓ Taxe : ") + jaune("" + ancien + " %") + "  →  " + vert("" + c.taxe + " %"));
+		}else if (equals(choix,"D")){
+			int ancien = c.popularite;
+			c.popularite = c.popularite +3;
+			println(vert("  ✓ Popularite : ") + jaune("" + ancien + " %") + "  →  " + vert("" + c.popularite + " %"));
 		}
 		println("");
-		c.quantite = c.quantite + 8; 
+		c.quantite = c.quantite + c.popularite; 
 		attendreValidationUtilisateur();
 	}
 
@@ -439,7 +447,7 @@ class Main extends Program {
 	void traiterMalus(Partie p) {
 		effacerTerminal();
 		afficherLogo();
-		int r = (int)(random() * 3);
+		int r = (int)(random() * 4);
 		CookieStat c = p.cookie;
 		
 		println("");
@@ -458,17 +466,22 @@ class Main extends Program {
 			c.prix = (int)(c.prix * 0.85);
 			println(rouge("  ✖ Prix de vente reduit (-15%)"));
 			println("    " + jaune("" + ancien + " €") + "  →  " + rouge("" + c.prix + " €"));
-		} else {
+		} else if (r == 2){
 			int ancien = c.taxe;
-			c.taxe = c.taxe + 8;
+			c.taxe = (int)(c.taxe * 1.8);
 			println(rouge("  ✖ Taxes augmentees (+8%)"));
 			println("    " + jaune("" + ancien + " %") + "  →  " + rouge("" + c.taxe + " %"));
+		}else{
+			int ancien = c.popularite;
+			c.popularite = (int)(c.popularite / 1.4);
+			println(rouge("  ✖ Popularité perdue (-4%)"));
+			println("    " + jaune("" + ancien + " %") + "  →  " + rouge("" + c.popularite + " %"));
 		}
 		
 		println("");
 		println(rouge("  ═══════════════════════════════════════════════════"));
 		println("");
-		c.quantite = c.quantite + 1;
+		c.quantite = c.quantite - c.popularite;
 		attendreValidationUtilisateur();
 	}
 
@@ -490,7 +503,8 @@ class Main extends Program {
 		int quantiteVendu = c.quantite;
 		int gainParCookies = c.prix - c.matiere;
 		int benefice = gainParCookies * quantiteVendu - ( c.taxe / 100);
-		
+		int populariteDuCookie = c.popularite;
+
 		p.gainJour = benefice;
 		p.argent = p.argent + benefice;
 	}
@@ -544,6 +558,8 @@ class Main extends Program {
 		data[ligne][2] = "" + p.argent;
 		data[ligne][3] = "" + p.gainJour;
 		data[ligne][4] = "" + p.quantite;
+		data[ligne][5] = "" + p.popularite;
+
 		CookieStat c = p.cookie;
 		if (c != null) {
 			data[ligne][4] = c.id;
@@ -552,6 +568,7 @@ class Main extends Program {
 			data[ligne][7] = "" + c.prix;
 			data[ligne][8] = "" + c.taxe;
 			data[ligne][9] = "" + c.quantite;
+			data[ligne][10] = "" + c.popularite;
 		} else {
 			data[ligne][4] = "NULL";
 			data[ligne][5] = "";
@@ -559,6 +576,7 @@ class Main extends Program {
 			data[ligne][7] = "0";
 			data[ligne][8] = "0";
 			data[ligne][9] = "0";
+			data[ligne][10] = "0";
 		}
 	}
 
@@ -609,6 +627,7 @@ class Main extends Program {
 				p.argent = entierDepuisTexte(getCell(csv, index, 2));
 				p.gainJour = entierDepuisTexte(getCell(csv, index, 3));
 				p.quantite = entierDepuisTexte(getCell(csv, index, 4));
+				p.popularite = entierDepuisTexte(getCell(csv, index, 5));
 				
 				String cookieId = getCell(csv, index, 4);
 				CookieStat c = new CookieStat();
@@ -619,6 +638,7 @@ class Main extends Program {
 					c.prix = entierDepuisTexte(getCell(csv, index, 7));
 					c.taxe = entierDepuisTexte(getCell(csv, index, 8));
 					c.quantite = entierDepuisTexte(getCell(csv, index, 9));
+					c.popularite = entierDepuisTexte(getCell(csv, index, 10));
 					p.cookie = c;
 
 				} else {
@@ -824,10 +844,10 @@ class Main extends Program {
 	}*/
 
 	String demanderReponseABC() {
-		print(cyan("(Choisissez ") + vert("A/B/C") + cyan(") > "));
+		print(cyan("(Choisissez ") + vert("A/B/C/D") + cyan(") > "));
 		String s = readString();
-		while (length(s) != 1 || (!equals(majuscule(s), "A") && !equals(majuscule(s), "B") && !equals(majuscule(s), "C"))) {
-			print(rouge("Invalide. ") + cyan("(A/B/C) > "));
+		while (length(s) != 1 || (!equals(majuscule(s), "A") && !equals(majuscule(s), "B") && !equals(majuscule(s), "C") && !equals(majuscule(s), "D"))) {
+			print(rouge("Invalide. ") + cyan("(A/B/C/D) > "));
 			s = readString();
 		}
 		return majuscule(s);
@@ -866,6 +886,7 @@ class Main extends Program {
 		cookie.prix = entierDepuisTexte(getCell(table, ligne, 3));
 		cookie.taxe = entierDepuisTexte(getCell(table, ligne, 4));
 		cookie.quantite = entierDepuisTexte(getCell(table, ligne, 5));
+		cookie.popularite = entierDepuisTexte(getCell(table, ligne, 6));
 		return cookie;
 	}
 
@@ -909,6 +930,7 @@ class Main extends Program {
 		partie.argent = ARGENT_DEPART;
 		partie.gainJour = GAIN_DEPART;
 		partie.quantite = 5;
+		partie.popularite = 3;
 		if (length(cookies) > 0) {
 			partie.cookie = copierCookie(cookies[0]);
 		} else {
@@ -924,6 +946,7 @@ class Main extends Program {
 		partie.argent = ARGENT_DEPART;
 		partie.gainJour = GAIN_DEPART;
 		partie.quantite = 5;
+		partie.popularite = 3;
 		partie.cookie = copierCookie(cookie);
 		return partie;
 	}
@@ -943,7 +966,6 @@ class Main extends Program {
 
 	// Affiche la liste des cookies avec leurs stats
 	void afficherListeCookies(CookieStat[] cookies) {
-		println("  " + gras("Légende ➜ ") + rouge("Cout") + " | " + vert("Vente") + " | " + jaune("Taxe") + " | Marge/unite");
 		println(cyan("  ──────────────────────────────────────────────────"));
 		int i = 0;
 		while (i < length(cookies)) {
@@ -963,7 +985,7 @@ class Main extends Program {
 		} else {
 			numStr = "" + numero;
 		}
-		println("  " + cyan(numStr + ".") + " " + c.nom + "  " + rouge("-" + c.matiere + "\u20ac") + " " + vert("+" + c.prix + "\u20ac") + " " + jaune("-" + c.taxe + "%") + "  \u25b6 " + couleurMarge);
+		println("  " + cyan(numStr + ".") + " " + c.nom + "  " + rouge("-" + c.matiere + "\u20ac") + " " + vert("+" + c.prix + "\u20ac") + " " + jaune("-" + c.taxe + "%") + " " + cyan("*" + c.popularite + "%")  + "  \u25b6 " + couleurMarge);
 	}
 
 	// Calcule la marge d'un cookie
@@ -993,6 +1015,7 @@ class Main extends Program {
 		copie.prix = source.prix;
 		copie.taxe = source.taxe;
 		copie.quantite = source.quantite;
+		copie.popularite = source.popularite;
 		return copie;
 	}
 
@@ -1094,6 +1117,8 @@ class Main extends Program {
 		assertEquals( 25 , c.prix);
 		assertEquals( 15 , c.taxe);
 		assertEquals( 15 , c.quantite);
+		//assertEquals( 15 , c.quantite);
+
 	}
 
 	void test_copierCookie(){
@@ -1188,6 +1213,7 @@ class Main extends Program {
         assertEquals(5 , entierDepuisTexte("5"));
         assertEquals(0 , entierDepuisTexte("a"));
     }
+
 	
 	// void test_nouvellePartieAvecCookie(){}
 	// endregion
