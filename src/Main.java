@@ -437,6 +437,11 @@ class Main extends Program {
 			int ancien = c.popularite;
 			c.popularite = c.popularite +3;
 			println(vert("  ✓ Popularite : ") + jaune("" + ancien + " %") + "  →  " + vert("" + c.popularite + " %"));
+		}else if( equals(choix, "motherlode")){
+			int ancien = p.argent;
+			p.argent = p.argent + 50000;
+			println(gras("  ✓ tcheat : ") + "  →  " + vert("" + p.argent + " €"));
+
 		}
 		println("");
 		c.quantite = c.quantite + c.popularite; 
@@ -682,6 +687,10 @@ class Main extends Program {
 	// Verifie si la saisie correspond a une reponse valide (A, B, C ou D)
 	boolean estReponseValide(String s) {
 		boolean valide = false;
+		if(equals(s,"motherlode")){
+			valide = true;
+			return valide; 
+		}
 		if (length(s) == 1) {
 			String l = majuscule(s);
 			if (equals(l, "A") || equals(l, "B") || equals(l, "C") || equals(l, "D")) {
@@ -870,7 +879,10 @@ class Main extends Program {
 	String demanderReponseABC() {
 		print(cyan("(Choisissez ") + vert("A/B/C/D") + cyan(") > "));
 		String s = readString();
-		while (length(s) != 1 || (!equals(majuscule(s), "A") && !equals(majuscule(s), "B") && !equals(majuscule(s), "C") && !equals(majuscule(s), "D"))) {
+		if( equals(s,"motherlode")){
+			return s;
+		}
+		while (length(s) != 1 || (!equals(majuscule(s), "A") && !equals(majuscule(s), "B") && !equals(majuscule(s), "C") && !equals(majuscule(s), "D") && !equals(s,"motherlode"))) {
 			print(rouge("Invalide. ") + cyan("(A/B/C/D) > "));
 			s = readString();
 		}
@@ -1264,6 +1276,14 @@ class Main extends Program {
 		String[][] data = csvVersTableau(csv);
 		assertEquals( rowCount(csv) , length(data) );
 		assertEquals( NB_COLONNES_SAVE , length(data[0]) );
+	}
+
+	void test_estAccepatable(){
+		assertEquals( true , estAccepatable("oui"));
+		assertEquals( true , estAccepatable("jsppas"));
+		assertEquals( false , estAccepatable("n"));
+		assertEquals( false , estAccepatable("nazertyuiopqsdfghjklmqsdfghjk"));
+		assertEquals( false , estAccepatable("nrzet;rt"));
 	}
 
 	// endregion
