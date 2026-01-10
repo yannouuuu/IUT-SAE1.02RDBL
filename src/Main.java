@@ -1544,11 +1544,11 @@ class Main extends Program {
 	}
 
 	void test_niveauDepuisTexte() {
-		assertEquals(Difficulte.FACILE, niveauDepuisTexte("FACILE"));
-		assertEquals(Difficulte.NORMAL, niveauDepuisTexte("NORMAL"));
-		assertEquals(Difficulte.MOYEN, niveauDepuisTexte("MOYEN"));
-		assertEquals(Difficulte.DIFFICILE, niveauDepuisTexte("DIFFICILE"));
-		assertEquals(Difficulte.DIFFICILE, niveauDepuisTexte("INCONNU"));
+		assertTrue(Difficulte.FACILE == niveauDepuisTexte("FACILE"));
+		assertTrue(Difficulte.NORMAL == niveauDepuisTexte("NORMAL"));
+		assertTrue(Difficulte.MOYEN == niveauDepuisTexte("MOYEN"));
+		assertTrue(Difficulte.DIFFICILE == niveauDepuisTexte("DIFFICILE"));
+		assertTrue(Difficulte.DIFFICILE == niveauDepuisTexte("INCONNU"));
 	}
 
 	void test_choisirQuestion() {
@@ -1560,10 +1560,10 @@ class Main extends Program {
 		assertTrue(r1 == q1 || r1 == q2);
 
 		Question r2 = choisirQuestion(questions, Difficulte.FACILE);
-		assertEquals(Difficulte.FACILE, r2.niveau);
+		assertTrue(Difficulte.FACILE == r2.niveau);
 
 		Question r3 = choisirQuestion(questions, Difficulte.MOYEN);
-		assertEquals(Difficulte.MOYEN, r3.niveau);
+		assertTrue(Difficulte.MOYEN == r3.niveau);
 	}
 
 	// endregion
