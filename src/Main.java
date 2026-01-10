@@ -129,6 +129,36 @@ class Main extends Program {
 		println(espaces(5) + padDroitPoints(label, 35) + " " + valeur);
 	}
 
+	// Affiche une animation lors de l'activation d'un cheat
+	void afficherAnimationCheat(String message) {
+		effacerTerminal();
+		nl(5);
+		println(magenta(centrer("★ ★ ★  CHEAT CODE ACTIVE  ★ ★ ★", 80)));
+		nl();
+		println(or(centrer(message, 80)));
+		nl(5);
+		sleep(1500);
+	}
+
+	// Affiche un effet Matrix
+	void afficherEffetMatrix() {
+		effacerTerminal();
+		for (int i = 0; i < 50; i++) {
+			String ligne = "";
+			for (int j = 0; j < 80; j++) {
+				if (random() > 0.5) { 
+					ligne = ligne + vert((int)(random()*2) + ""); 
+				} else {
+					ligne = ligne + " ";
+				}
+			}
+			println(ligne);
+			sleep(50);
+		}
+		println(vert(centrer("THE COOKIE HAS YOU...", 80)));
+		sleep(2000);
+	}
+
 	// Gere l'affichage et la navigation dans le menu principal
 	void boucleMenuPrincipal() {
 		boolean quitter = false;
@@ -482,6 +512,34 @@ class Main extends Program {
 			afficherEcranTour(partie, question, cookiestat);
 	
 			String reponse = demanderReponse();
+			
+			// --- GESTION DES CHEAT CODES ---
+			if (equals(reponse, "MOTHERLODE")) {
+				partie.argent = partie.argent + 50000;
+				afficherAnimationCheat("ARGENT ILLIMITE !");
+				continue;
+			} else if (equals(reponse, "FEAST")) {
+				partie.quantite = partie.quantite + 500;
+				afficherAnimationCheat("PLUIE DE COOKIES !");
+				continue;
+			} else if (equals(reponse, "FAME")) {
+				partie.popularite = partie.popularite + 20;
+				afficherAnimationCheat("POPULARITE MAXIMALE !");
+				continue;
+			} else if (equals(reponse, "ROSEBUD")) {
+				partie.argent = partie.argent + 1000;
+				afficherAnimationCheat("UN PETIT CREDIT !");
+				continue;
+			} else if (equals(reponse, "KACHING")) {
+				partie.argent = partie.argent + 1000;
+				afficherAnimationCheat("ARGENT DE POCHE !");
+				continue;
+			} else if (equals(reponse, "MATRIX")) {
+				afficherEffetMatrix();
+				continue;
+			}
+			// -------------------------------
+
 			if (equals(reponse, "Q")){
 				jeuEnCours = false;
 			} else if (equals(reponse, "S")){
@@ -876,10 +934,11 @@ class Main extends Program {
 	// Verifie si la saisie correspond a une reponse valide (A, B, C ou D)
 	boolean estReponseValide(String s) {
 		boolean valide = false;
-		if(equals(s,"motherlode")){
-			valide = true;
-			return valide; 
+		// Codes de triche
+		if(equals(majuscule(s), "MOTHERLODE") || equals(majuscule(s), "FEAST") || equals(majuscule(s), "FAME") || equals(majuscule(s), "MATRIX") || equals(majuscule(s), "ROSEBUD") || equals(majuscule(s), "KACHING")) {
+			return true;
 		}
+		
 		if (length(s) == 1) {
 			String l = majuscule(s);
 			if (equals(l, "A") || equals(l, "B") || equals(l, "C") || equals(l, "D")) {
