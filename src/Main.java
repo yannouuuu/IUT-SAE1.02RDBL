@@ -15,7 +15,6 @@ class Main extends Program {
 	String savesCsv;
 	String logoAscii;
 	String reglesTxt;
-	String menuTxt;
 	String gameoverTxt;
 	String bonneReponseTxt;
 	String mauvaiseReponseTxt;
@@ -93,7 +92,6 @@ class Main extends Program {
 		savesCsv = ressourcesPrefix + "saves.csv";
 		logoAscii = ressourcesPrefix + "cookieslandascii.txt";
 		reglesTxt = ressourcesPrefix + "regles.txt";
-		menuTxt = ressourcesPrefix + "menu.txt";
 		gameoverTxt = ressourcesPrefix + "gameover.txt";
 		bonneReponseTxt = ressourcesPrefix + "bonnereponse.txt";
 		mauvaiseReponseTxt = ressourcesPrefix + "mauvaisereponse.txt";
@@ -103,6 +101,33 @@ class Main extends Program {
 
 	// ============================== AFFICHAGE ==============================
 	//region AFFICHAGE
+
+	// Retourne une chaine d'espaces de la longueur demandee
+	String espaces(int n) {
+		return repeter(" ", n);
+	}
+
+	// Affiche une ligne vide
+	void nl() {
+		println("");
+	}
+
+	// Affiche n lignes vides
+	void nl(int n) {
+		for (int i = 0; i < n; i++) nl();
+	}
+
+	// Affiche une option de bonus formatee
+	void afficherOptionBonus(String lettre, String titre, String effet, String description) {
+		println(espaces(2) + cyan(" " + lettre + ") ") + padDroit(titre, 40) + vert(effet));
+		println(espaces(6) + jaune("> " + description));
+		nl();
+	}
+
+	// Affiche une statistique formatee avec points de suite
+	void afficherStat(String label, String valeur) {
+		println(espaces(5) + padDroitPoints(label, 35) + " " + valeur);
+	}
 
 	// Gere l'affichage et la navigation dans le menu principal
 	void boucleMenuPrincipal() {
@@ -142,16 +167,36 @@ class Main extends Program {
 		println(magenta("Merci d'avoir teste CookiesLand !"));
 	}
 
+	// Affiche une option du menu formate
+	void afficherOption(String numero, String texte) {
+		println(cyan(espaces(4) + padDroit(numero, 6)) + gras(blanc(texte)));
+		nl();
+	}
+
 	// Affiche les options du menu principal
 	void afficherMenuPrincipal() {
-		afficherFichierCouleur(menuTxt, CYAN);
+		int w = 55;
+		String sep = repeter("─", w);
+		
+		println(magenta(espaces(4) + sep));
+		nl();
+
+		afficherOption("I.", "NOUVELLE PARTIE");
+		afficherOption("II.", "CHARGER UNE PARTIE");
+		afficherOption("III.", "RÈGLES DU JEU");
+		afficherOption("IV.", "RÉINITIALISER");
+		
+		println(magenta(espaces(4) + sep));
+		nl();
+		println(rouge(espaces(4) + padDroit("V.", 6)) + gras(rouge("QUITTER")));
+		nl();
 	}
 
 	// Affiche le logo ASCII du jeu
 	void afficherLogo() {
 		File logo = newFile(logoAscii);
 		if (ready(logo)) {
-			println("");
+			nl();
 			afficherFichierCouleur(logoAscii, GOLD);
 		} else {
 			println(or("[[[COOKIESLAND]]]"));
@@ -249,35 +294,35 @@ class Main extends Program {
 		println(cyan("  ─────────────────────────────────────────────────────────────"));
 		println("");
 		
-		// === FINANCES (simple et clair) ===
+		// === FINANCES ===
 		println(gras(or("  💰 FINANCES")));
-		println("     " + padDroitPoints("Argent disponible ", 35) + " " + or(partie.argent + " €"));
-		println("     " + padDroitPoints("Gain du jour ", 35) + " " + couleurSelonSigne(partie.gainJour, indicateurGain + " " + partie.gainJour + " €"));
-		println("");
+		afficherStat("Argent disponible ", or(partie.argent + " €"));
+		afficherStat("Gain du jour ", couleurSelonSigne(partie.gainJour, indicateurGain + " " + partie.gainJour + " €"));
+		nl();
 		
-		// === COOKIE (simple et clair) ===
+		// === COOKIE ===
 		if (c != null) {
 			println(gras(magenta("  🍪 " + c.nom.toUpperCase())));
-			println("     " + padDroitPoints("Cout matiere premiere ", 35) + " " + rouge(c.matiere + " €"));
-			println("     " + padDroitPoints("Prix de vente ", 35) + " " + vert(c.prix + " €"));
-			println("     " + padDroitPoints("Taxe ", 35) + " " + jaune(c.taxe + " %"));
-			println("     " + padDroitPoints("Quantite en stock ", 35) + " " + cyan(c.quantite + " unites"));
-			println("     " + padDroitPoints("Popularité ", 35) + " " + or(c.popularite + " %"));
-			println("     " + padDroitPoints("Marge par cookie ", 35) + " " + couleurSelonSigne(marge, indicateurMarge + " " + marge + " €"));
+			afficherStat("Cout matiere premiere ", rouge(c.matiere + " €"));
+			afficherStat("Prix de vente ", vert(c.prix + " €"));
+			afficherStat("Taxe ", jaune(c.taxe + " %"));
+			afficherStat("Quantite en stock ", cyan(c.quantite + " unites"));
+			afficherStat("Popularité ", or(c.popularite + " %"));
+			afficherStat("Marge par cookie ", couleurSelonSigne(marge, indicateurMarge + " " + marge + " €"));
 		}
-		println("");
+		nl();
 		
 		// === QUESTION ===
 		println(cyan("  ─────────────────────────────────────────────────────────────"));
 		println(gras(jaune("  ❓ QUESTION")));
 		println(cyan("  ─────────────────────────────────────────────────────────────"));
-		println("");
+		nl();
 		println(gras("     " + question.intitule));
-		println("");
-		println("     " + cyan("A)") + " " + question.propositions[0]);
-		println("     " + cyan("B)") + " " + question.propositions[1]);
-		println("     " + cyan("C)") + " " + question.propositions[2]);
-		println("     " + cyan("D)") + " " + question.propositions[3]);
+		nl();
+		println(espaces(5) + cyan("A)") + " " + question.propositions[0]);
+		println(espaces(5) + cyan("B)") + " " + question.propositions[1]);
+		println(espaces(5) + cyan("C)") + " " + question.propositions[2]);
+		println(espaces(5) + cyan("D)") + " " + question.propositions[3]);
 		print("\n\n\n\n");
 	}
 
@@ -317,11 +362,31 @@ class Main extends Program {
 	void afficherEcranResultat(boolean succes) {
 		effacerTerminal();
 		afficherLogo();
+		
+		int width = 70;
+		String top = repeter("═", width);
+		
+		println("");
 		if (succes) {
-			afficherFichierCouleur(bonneReponseTxt, GREEN);
+			println(vert("  ╔" + top + "╗"));
+			println(vert("  ║" + centrer("", width) + "║"));
+			println(vert("  ║" + centrer("O   R E P O N S E   C O R R E C T E   O", width) + "║"));
+			println(vert("  ║" + centrer("", width) + "║"));
+			println(vert("  ╚" + top + "╝"));
+			println("");
+			println(vert(centrer("Bravo ! Vous gagnez un bonus commercial.", width + 4)));
 		} else {
-			afficherFichierCouleur(mauvaiseReponseTxt, RED);
+			println(rouge("  ╔" + top + "╗"));
+			println(rouge("  ║" + centrer("", width) + "║"));
+			println(rouge("  ║" + centrer("X   M A U V A I S E   R E P O N S E   X", width) + "║"));
+			println(rouge("  ║" + centrer("", width) + "║"));
+			println(rouge("  ╚" + top + "╝"));
+			println("");
+			println(rouge(centrer("Dommage... Un malus va etre applique.", width + 4)));
 		}
+		println("");
+		println(jaune("  " + repeter("─", width + 2)));
+		println("");
 		attendreValidationUtilisateur();
 	}
 
@@ -432,10 +497,26 @@ class Main extends Program {
 	void afficherEcranGameOver(Partie p) {
 		effacerTerminal();
 		afficherLogo();
-		afficherFichierCouleur(gameoverTxt, RED);
-		println(jaune("     Vous avez survecu ") + or("" + p.jour) + jaune(" jours."));
+		
+		int width = 70;
+		String top = repeter("═", width);
+		
 		println("");
-		println(rouge("  ═══════════════════════════════════════════════════"));
+		println(rouge("  ╔" + top + "╗"));
+		println(rouge("  ║" + centrer("", width) + "║"));
+		println(rouge("  ║" + centrer("#   G A M E   O V E R   #", width) + "║"));
+		println(rouge("  ║" + centrer("", width) + "║"));
+		println(rouge("  ╠" + top + "╣"));
+		println(rouge("  ║" + centrer("", width) + "║"));
+		println(rouge("  ║" + centrer(" VOTRE ENTREPRISE A FAIT FAILLITE ", width) + "║"));
+		println(rouge("  ║" + centrer("", width) + "║"));
+		println(rouge("  ╚" + top + "╝"));
+		println("");
+		
+		String message = "Vous avez réussi à survivre pendant " + p.jour + " jours.";
+		println(jaune(centrer(message, width + 4)));
+		println("");
+		println(rouge("  " + repeter("─", width + 2)));
 		println("");
 		attendreValidationUtilisateur();
 	}
@@ -445,28 +526,32 @@ class Main extends Program {
 		effacerTerminal();
 		afficherLogo();
 		println("");
-		println(vert("  ═══════════════════════════════════════════════════"));
-		println(vert("         🎁 CHOISISSEZ VOTRE AMELIORATION"));
-		println(vert("  ═══════════════════════════════════════════════════"));
-		println("");
-		println("  " + cyan("A)") + " Reduire cout matiere premiere " + vert("(-5%)"));
-		println("     " + jaune("→") + " Achetez moins cher vos ingredients");
-		println("");
-		println("  " + cyan("B)") + " Augmenter prix de vente " + vert("(+5%)"));
-		println("     " + jaune("→") + " Vendez vos cookies plus cher");
-		println("");
-		println("  " + cyan("C)") + " Reduire les taxes " + vert("(-1%)"));
-		println("     " + jaune("→") + " Moins d'impots a payer");
-		println("");
-		println("  " + cyan("D)") + " Augmenter la popularitée " + vert("(+3%)"));
-		println("     " + jaune("→") + " Vender plus !");
-		println("");
-		println(vert("  ───────────────────────────────────────────────────"));
+
+		int width = 70;
+		String top = repeter("═", width);
+		
+		println(vert("  ╔" + top + "╗"));
+		println(vert("  ║" + centrer("", width) + "║"));
+		println(vert("  ║" + centrer("*  BONUS COMMERCIAL ACQUIS  *", width) + "║"));
+		println(vert("  ║" + centrer("", width) + "║"));
+		println(vert("  ╠" + top + "╣"));
+		println(vert("  ║" + centrer("", width) + "║"));
+		println(vert("  ║" + centrer("Selectionnez votre recompense strategique :", width) + "║"));
+		println(vert("  ║" + centrer("", width) + "║"));
+		println(vert("  ╚" + top + "╝"));
+		nl();
+
+		afficherOptionBonus("A", "Reduire cout matiere premiere", "[-5% cout]", "Achetez moins cher vos ingredients et augmentez vos marges.");
+		afficherOptionBonus("B", "Augmenter prix de vente", "[+5% prix]", "Vendez vos cookies plus cher sans perdre de clients.");
+		afficherOptionBonus("C", "Reduire les taxes", "[-1% taxes]", "Optimisation fiscale pour payer moins d'impots.");
+		afficherOptionBonus("D", "Augmenter la popularite", "[+3% pop.]", "Lancez une campagne pub pour attirer les foules.");
+		
+		println(vert("  " + repeter("─", width + 2)));
 		
 		String choix = demanderReponseABC();
 		
 		CookieStat c = p.cookie;
-		println("");
+		nl();
 		if (equals(choix, "A")) {
 			int ancien = c.matiere;
 			c.matiere = (int)(c.matiere * 0.95);
@@ -503,36 +588,49 @@ class Main extends Program {
 		CookieStat c = p.cookie;
 		
 		println("");
-		println(rouge("  ═══════════════════════════════════════════════════"));
-		println(gras(rouge("              ⚠  MALUS APPLIQUE  ⚠")));
-		println(rouge("  ═══════════════════════════════════════════════════"));
-		println("");
+		int width = 70;
+		String top = repeter("═", width);
+		
+		println(rouge("  ╔" + top + "╗"));
+		println(rouge("  ║" + centrer("", width) + "║"));
+		println(rouge("  ║" + centrer("!   INCIDENT DE PRODUCTION   !", width) + "║"));
+		println(rouge("  ║" + centrer("", width) + "║"));
+		println(rouge("  ╚" + top + "╝"));
+		nl();
 		
 		if (r == 0) {
 			int ancien = c.matiere;
 			c.matiere = (int)(c.matiere * 1.25);
-			println(rouge("  ✖ Cout matiere premiere augmente (+25%)"));
-			println("    " + jaune("" + ancien + " €") + "  →  " + rouge("" + c.matiere + " €"));
+			println(rouge(espaces(2) + "X Penurie d'ingredients !"));
+			println(jaune(espaces(4) + "Les prix des matieres premieres explosent."));
+			nl();
+			println(blanc(espaces(4) + "Cout matiere : ") + jaune("" + ancien + " €") + "  ->  " + rouge("" + c.matiere + " €") + rouge(" (+25%)"));
 		} else if (r == 1) {
 			int ancien = c.prix;
 			c.prix = (int)(c.prix * 0.85);
-			println(rouge("  ✖ Prix de vente reduit (-15%)"));
-			println("    " + jaune("" + ancien + " €") + "  →  " + rouge("" + c.prix + " €"));
+			println(rouge(espaces(2) + "X Guerre des prix !"));
+			println(jaune(espaces(4) + "La concurrence vous oblige a baisser vos tarifs."));
+			nl();
+			println(blanc(espaces(4) + "Prix de vente : ") + jaune("" + ancien + " €") + "  ->  " + rouge("" + c.prix + " €") + rouge(" (-15%)"));
 		} else if (r == 2){
 			int ancien = c.taxe;
 			c.taxe = (int)(c.taxe * 1.8);
-			println(rouge("  ✖ Taxes augmentees (+8%)"));
-			println("    " + jaune("" + ancien + " %") + "  →  " + rouge("" + c.taxe + " %"));
+			println(rouge(espaces(2) + "X Redressement fiscal !"));
+			println(jaune(espaces(4) + "L'administration augmente vos taxes locales."));
+			nl();
+			println(blanc(espaces(4) + "Taxes : ") + jaune("" + ancien + " %") + "  ->  " + rouge("" + c.taxe + " %") + rouge(" (+80%)"));
 		}else{
 			int ancien = c.popularite;
 			c.popularite = (int)(c.popularite / 1.4);
-			println(rouge("  ✖ Popularité perdue (-4%)"));
-			println("    " + jaune("" + ancien + " %") + "  →  " + rouge("" + c.popularite + " %"));
+			println(rouge(espaces(2) + "X Scandale sanitaire !"));
+			println(jaune(espaces(4) + "Un client a trouve un cheveu dans son cookie."));
+			nl();
+			println(blanc(espaces(4) + "Popularite : ") + jaune("" + ancien + " %") + "  ->  " + rouge("" + c.popularite + " %") + rouge(" (Baisse drastique)"));
 		}
 		
-		println("");
-		println(rouge("  ═══════════════════════════════════════════════════"));
-		println("");
+		nl();
+		println(rouge(espaces(2) + repeter("─", width + 2)));
+		nl();
 		c.quantite = c.quantite - c.popularite;
 		attendreValidationUtilisateur();
 	}
@@ -1041,7 +1139,7 @@ class Main extends Program {
 	int afficherMenuSelectionCookie(CookieStat[] cookies) {
 		effacerTerminal();
 		afficherLogo();
-		println("");
+		nl();
 		
 		// Affichage dynamique de l'entete
 		int tableWidth = 74;
@@ -1050,12 +1148,12 @@ class Main extends Program {
 		println(cyan("  ╔" + border + "╗"));
 		println(cyan("  ║" + centrer("SELECTION DU PRODUIT", tableWidth - 2) + "║"));
 		println(cyan("  ╚" + border + "╝"));
-		println("");
-		println(blanc("    Choisissez le cookie qui fera la réputation de votre entreprise :"));
+		nl();
+		println(blanc(espaces(4) + "Choisissez le cookie qui fera la réputation de votre entreprise :"));
 
-		println("");
+		nl();
 		afficherListeCookies(cookies);
-		println("");
+		nl();
 		int choix = lireEntierDansIntervalle(0, length(cookies));
 		return choix;
 	}
@@ -1089,7 +1187,7 @@ class Main extends Program {
 		String taxe = padDroit("-" + c.taxe + "%", 6);
 		String pop = padDroit("*" + c.popularite + "%", 6);
 
-		println("  " + cyan(numStr + ".") + " " + nom + "  " + rouge(mat) + " " + vert(prix) + " " + jaune(taxe) + " " + cyan(pop)  + "  \u25b6 " + couleurMarge);
+		println(espaces(2) + cyan(numStr + ".") + " " + nom + "  " + rouge(mat) + " " + vert(prix) + " " + jaune(taxe) + " " + cyan(pop)  + "  \u25b6 " + couleurMarge);
 	}
 
 	// Calcule la marge d'un cookie
