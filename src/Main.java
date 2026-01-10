@@ -7,7 +7,7 @@ class Main extends Program {
 	final char CSV_SEPARATOR = ';';
 	final int ARGENT_DEPART = 150;
 	final int GAIN_DEPART = 30;
-	final int NB_COLONNES_SAVE = 13; // nombre de colonnes utilisées dans le fichier de sauvegarde CSV
+	final int NB_COLONNES_SAVE = 14; // nombre de colonnes utilisées dans le fichier de sauvegarde CSV
 	
 	String ressourcesPrefix = "resources/";
 	String questionsCsv;
@@ -290,9 +290,9 @@ class Main extends Program {
 		println("");
 		
 		// === BARRE DE STATUT ===
-		println(jaune("  📅 JOUR " + partie.jour));
+		println(jaune("  📅 JOUR " + partie.jour + "   |   MODE: " + partie.difficulte));
 		println(cyan("  ─────────────────────────────────────────────────────────────"));
-		println("");
+		nl();
 		
 		// === FINANCES ===
 		println(gras(or("  💰 FINANCES")));
@@ -443,19 +443,41 @@ class Main extends Program {
 			println("Impossible d'initialiser la partie (aucun cookie disponible).");
 			attendreValidationUtilisateur();
 		} else {
+			Difficulte diff = afficherMenuDifficulte();
 			int choix = afficherMenuSelectionCookie(cookies);
 			if (choix > 0) {
 				Partie partie = nouvellePartieAvecCookie(cookies[choix - 1]);
+				partie.difficulte = diff;
 				boucleJeu(partie, questions, partie.cookie);
 			}
 		}
+	}
+	
+	// Choisit une question adaptee a la difficulté
+	Question choisirQuestion(Question[] questions, Difficulte diff) {
+		// Si mode NORMAL, on prend une question au hasard sans filtrer
+		if (diff == Difficulte.NORMAL) {
+			return questions[(int) (random() * length(questions))];
+		}
+
+		int maxEssais = 200;
+		int essai = 0;
+		while (essai < maxEssais) {
+			Question q = questions[(int) (random() * length(questions))];
+			// En mode "spécifique", on cherche une correspondance exacte
+			if (q.niveau == diff) {
+				return q;
+			}
+			essai = essai + 1;
+		}
+		return questions[(int) (random() * length(questions))];
 	}
 	
 	// Boucle principale du jeu : gere les tours, les questions et les evenements
 	void boucleJeu(Partie partie, Question[] questions, CookieStat cookiestat){
 		boolean jeuEnCours = true;
 		while (jeuEnCours) {
-			Question question = questions[(int) (random() * length(questions))];
+			Question question = choisirQuestion(questions, partie.difficulte);
 			String bonneReponse = melangerPropositions(question);
 			afficherEcranTour(partie, question, cookiestat);
 	
@@ -740,6 +762,12 @@ class Main extends Program {
 			data[ligne][11] = "0";
 			data[ligne][12] = "0";
 		}
+		
+		if (p.difficulte != null) {
+			data[ligne][13] = "" + p.difficulte;
+		} else {
+			data[ligne][13] = "MOYEN";
+		}
 	}
 
 	// Copie les donnees d'un fichier CSV vers un tableau de chaines
@@ -806,9 +834,16 @@ class Main extends Program {
 
 				} else {
 					p.cookie = null;
-				}			
+				}
+
+				if (columnCount(csv) >= 14) {
+					p.difficulte = niveauDepuisTexte(getCell(csv, index, 13));
+				} else {
+					p.difficulte = Difficulte.MOYEN;
+				}
+
 				Question[] questions = chargerQuestions();
-				boucleJeu(p, questions, c);
+				boucleJeu(p, questions, c); // Warning: c variable might be confusing here if p.cookie is set
 			}
 		}
 	}
@@ -1135,6 +1170,36 @@ class Main extends Program {
 		return partie;
 	}
 
+	// Affiche le menu de selection de la difficulté
+	Difficulte afficherMenuDifficulte() {
+		effacerTerminal();
+		afficherLogo();
+		nl();
+		
+		int w = 55;
+		String sep = repeter("─", w);
+		
+		println(cyan(espaces(4) + "╔" + sep + "╗"));
+		println(cyan(espaces(4) + "║" + centrer("NIVEAU DE DIFFICULTE", w) + "║"));
+		println(cyan(espaces(4) + "╚" + sep + "╝"));
+		nl();
+		
+		afficherOption("1.", "FACILE    (Marché stable, clients dociles)");
+		afficherOption("2.", "NORMAL    (Mélange aléatoire standard)");
+		afficherOption("3.", "MOYEN     (La vraie vie d'entrepreneur)");
+		afficherOption("4.", "DIFFICILE (Crise économique permanente)");
+		
+		nl();
+		println(magenta(espaces(4) + sep));
+		nl();
+		
+		int choix = lireEntierDansIntervalle(1, 4);
+		if (choix == 1) return Difficulte.FACILE;
+		else if (choix == 2) return Difficulte.NORMAL;
+		else if (choix == 3) return Difficulte.MOYEN;
+		else return Difficulte.DIFFICILE;
+	}
+
 	// Affiche le menu de selection de cookie et retourne le choix (0 = annuler)
 	int afficherMenuSelectionCookie(CookieStat[] cookies) {
 		effacerTerminal();
@@ -1230,6 +1295,8 @@ class Main extends Program {
 	Difficulte niveauDepuisTexte(String valeur) {
 		if (equals(valeur, "FACILE")) {
 			return Difficulte.FACILE;
+		} else if (equals(valeur, "NORMAL")) {
+			return Difficulte.NORMAL;
 		} else if (equals(valeur, "MOYEN")) {
 			return Difficulte.MOYEN;
 		}
@@ -1474,6 +1541,29 @@ class Main extends Program {
 		assertEquals("abcabc", repeter("abc", 2));
 		assertEquals("", repeter("abc", 0));
 		assertEquals("aaaaa", repeter("a", 5));
+	}
+
+	void test_niveauDepuisTexte() {
+		assertEquals(Difficulte.FACILE, niveauDepuisTexte("FACILE"));
+		assertEquals(Difficulte.NORMAL, niveauDepuisTexte("NORMAL"));
+		assertEquals(Difficulte.MOYEN, niveauDepuisTexte("MOYEN"));
+		assertEquals(Difficulte.DIFFICILE, niveauDepuisTexte("DIFFICILE"));
+		assertEquals(Difficulte.DIFFICILE, niveauDepuisTexte("INCONNU"));
+	}
+
+	void test_choisirQuestion() {
+		Question q1 = new Question(); q1.niveau = Difficulte.FACILE;
+		Question q2 = new Question(); q2.niveau = Difficulte.MOYEN;
+		Question[] questions = new Question[]{q1, q2};
+
+		Question r1 = choisirQuestion(questions, Difficulte.NORMAL);
+		assertTrue(r1 == q1 || r1 == q2);
+
+		Question r2 = choisirQuestion(questions, Difficulte.FACILE);
+		assertEquals(Difficulte.FACILE, r2.niveau);
+
+		Question r3 = choisirQuestion(questions, Difficulte.MOYEN);
+		assertEquals(Difficulte.MOYEN, r3.niveau);
 	}
 
 	// endregion

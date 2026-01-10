@@ -5,5 +5,6 @@ class Partie {
 	int quantite;
 	int popularite;
 	CookieStat cookie;
+	Difficulte difficulte;
 	
 }
