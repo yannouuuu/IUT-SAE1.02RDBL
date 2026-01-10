@@ -773,11 +773,17 @@ class Main extends Program {
 	// Copie les donnees d'un fichier CSV vers un tableau de chaines
 	void copierDonnees(CSVFile source, String[][] dest) {
 		int rows = rowCount(source);
+		int cols = columnCount(source);
 		int i = 0;
 		while (i < rows) {
 			int j = 0;
 			while (j < NB_COLONNES_SAVE) {
-				dest[i][j] = getCell(source, i, j);
+				if (j < cols) {
+					dest[i][j] = getCell(source, i, j);
+				} else {
+					if (j == 13) dest[i][j] = "MOYEN"; // Difficulté manquante -> MOYEN
+					else dest[i][j] = "0"; // Autre -> 0
+				}
 				j = j + 1;
 			}
 			i = i + 1;
@@ -1531,8 +1537,8 @@ class Main extends Program {
 	}
 
 	void test_centrer() {
-		assertEquals("   test   ", centrer("test", 10)); // 10-4=6 => 3 espaces de chaque côté
-		assertEquals("  test   ", centrer("test", 9));   // 9-4=5  => 2 espaces à gauche, 3 à droite
+		assertEquals("   test   ", centrer("test", 10)); // 10-4=6 donc 3 espaces de chaque côté
+		assertEquals("  test   ", centrer("test", 9));   // 9-4=5  donc 2 espaces à gauche, 3 à droite
 		assertEquals("test", centrer("test", 4));
 		assertEquals("test", centrer("test", 2));
 	}
