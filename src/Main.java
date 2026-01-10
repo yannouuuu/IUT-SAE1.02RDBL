@@ -517,30 +517,21 @@ class Main extends Program {
 			if (equals(reponse, "MOTHERLODE")) {
 				partie.argent = partie.argent + 50000;
 				afficherAnimationCheat("ARGENT ILLIMITE !");
-				continue;
 			} else if (equals(reponse, "FEAST")) {
 				partie.quantite = partie.quantite + 500;
 				afficherAnimationCheat("PLUIE DE COOKIES !");
-				continue;
 			} else if (equals(reponse, "FAME")) {
 				partie.popularite = partie.popularite + 20;
 				afficherAnimationCheat("POPULARITE MAXIMALE !");
-				continue;
 			} else if (equals(reponse, "ROSEBUD")) {
 				partie.argent = partie.argent + 1000;
 				afficherAnimationCheat("UN PETIT CREDIT !");
-				continue;
 			} else if (equals(reponse, "KACHING")) {
 				partie.argent = partie.argent + 1000;
 				afficherAnimationCheat("ARGENT DE POCHE !");
-				continue;
 			} else if (equals(reponse, "MATRIX")) {
 				afficherEffetMatrix();
-				continue;
-			}
-			// -------------------------------
-
-			if (equals(reponse, "Q")){
+			} else if (equals(reponse, "Q")){
 				jeuEnCours = false;
 			} else if (equals(reponse, "S")){
 				sauvegarderPartie(partie);
