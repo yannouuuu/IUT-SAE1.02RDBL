@@ -7,7 +7,7 @@ class Main extends Program {
 	final char CSV_SEPARATOR = ';';
 	final int ARGENT_DEPART = 150;
 	final int GAIN_DEPART = 30;
-	final int NB_COLONNES_SAVE = 11; // nombre de colonnes utilisées dans le fichier de sauvegarde CSV
+	final int NB_COLONNES_SAVE = 13; // nombre de colonnes utilisées dans le fichier de sauvegarde CSV
 	
 	String ressourcesPrefix = "resources/";
 	String questionsCsv;
@@ -19,7 +19,6 @@ class Main extends Program {
 	String gameoverTxt;
 	String bonneReponseTxt;
 	String mauvaiseReponseTxt;
-	String choixCookieTxt;
 	String ecranBienvenueDir;
 
 	// ============================== COULEURS ==============================
@@ -98,7 +97,6 @@ class Main extends Program {
 		gameoverTxt = ressourcesPrefix + "gameover.txt";
 		bonneReponseTxt = ressourcesPrefix + "bonnereponse.txt";
 		mauvaiseReponseTxt = ressourcesPrefix + "mauvaisereponse.txt";
-		choixCookieTxt = ressourcesPrefix + "choixcookie.txt";
 		ecranBienvenueDir = ressourcesPrefix + "ecranbienvenue/";
 	}
 
@@ -176,6 +174,55 @@ class Main extends Program {
 		}
 	}
 
+	// Ajoute des espaces a droite pour atteindre la taille voulue
+	String padDroit(String s, int n) {
+		String res = s;
+		while (length(res) < n) {
+			res = res + " ";
+		}
+		return res;
+	}
+
+	// Ajoute des points a droite pour atteindre la taille voulue
+	String padDroitPoints(String s, int n) {
+		String res = s;
+		while (length(res) < n) {
+			res = res + ".";
+		}
+		return res;
+	}
+
+	// Centre un texte dans une largeur donnee en comblant avec des espaces
+	String centrer(String s, int largeur) {
+		if (length(s) >= largeur) {
+			return s;
+		}
+		int espaces = largeur - length(s);
+		int gauche = espaces / 2;
+		String res = "";
+		int i = 0;
+		while (i < gauche) {
+			res = res + " ";
+			i = i + 1;
+		}
+		res = res + s;
+		while (length(res) < largeur) {
+			res = res + " ";
+		}
+		return res;
+	}
+
+	// Repete un caractere n fois
+	String repeter(String c, int n) {
+		String res = "";
+		int i = 0;
+		while (i < n) {
+			res = res + c;
+			i = i + 1;
+		}
+		return res;
+	}
+
 	// Affiche les informations du tour courant (jour, argent, stats, question)
 	void afficherEcranTour(Partie partie, Question question ,CookieStat cookieStat) {
 		effacerTerminal();
@@ -204,19 +251,19 @@ class Main extends Program {
 		
 		// === FINANCES (simple et clair) ===
 		println(gras(or("  💰 FINANCES")));
-		println("     Argent disponible ............ " + or(partie.argent + " €"));
-		println("     Gain du jour ................. " + couleurSelonSigne(partie.gainJour, indicateurGain + " " + partie.gainJour + " €"));
+		println("     " + padDroitPoints("Argent disponible ", 35) + " " + or(partie.argent + " €"));
+		println("     " + padDroitPoints("Gain du jour ", 35) + " " + couleurSelonSigne(partie.gainJour, indicateurGain + " " + partie.gainJour + " €"));
 		println("");
 		
 		// === COOKIE (simple et clair) ===
 		if (c != null) {
 			println(gras(magenta("  🍪 " + c.nom.toUpperCase())));
-			println("     Cout matiere premiere ........ " + rouge(c.matiere + " €"));
-			println("     Prix de vente ................ " + vert(c.prix + " €"));
-			println("     Taxe ......................... " + jaune(c.taxe + " %"));
-			println("     Quantite en stock ............ " + cyan(c.quantite + " unites"));
-			println("     Popularité ................... " + or(c.popularite + " %"));
-			println("     Marge par cookie ............. " + couleurSelonSigne(marge, indicateurMarge + " " + marge + " €"));
+			println("     " + padDroitPoints("Cout matiere premiere ", 35) + " " + rouge(c.matiere + " €"));
+			println("     " + padDroitPoints("Prix de vente ", 35) + " " + vert(c.prix + " €"));
+			println("     " + padDroitPoints("Taxe ", 35) + " " + jaune(c.taxe + " %"));
+			println("     " + padDroitPoints("Quantite en stock ", 35) + " " + cyan(c.quantite + " unites"));
+			println("     " + padDroitPoints("Popularité ", 35) + " " + or(c.popularite + " %"));
+			println("     " + padDroitPoints("Marge par cookie ", 35) + " " + couleurSelonSigne(marge, indicateurMarge + " " + marge + " €"));
 		}
 		println("");
 		
@@ -304,15 +351,15 @@ class Main extends Program {
 	
 	// Reinitialise le fichier de sauvegardes (efface tout)
 	void initialiserSauvegardes() {
-		println("ATTENTION : Cela va effacer toutes les sauvegardes existantes.");
-		print("Etes-vous sur ? (O/N) > ");
+		println(rouge(gras("ATTENTION : Cela va effacer toutes les sauvegardes existantes.")));
+		print(blanc("Etes-vous sur ? ") + cyan("(O/N) > "));
 		String rep = readString();
 		if (equals(majuscule(rep), "O")) {
 			String[][] data = new String[0][NB_COLONNES_SAVE];
 			saveCSV(data, savesCsv, CSV_SEPARATOR);
-			println("Fichier de sauvegarde reinitialise.");
+			println(vert("Fichier de sauvegarde reinitialise."));
 		} else {
-			println("Annule.");
+			println(jaune("Annule."));
 		}
 		attendreValidationUtilisateur();
 	}
@@ -440,7 +487,7 @@ class Main extends Program {
 		}else if( equals(choix, "motherlode")){
 			int ancien = p.argent;
 			p.argent = p.argent + 50000;
-			println(gras("  ✓ tcheat : ") + "  →  " + vert("" + p.argent + " €"));
+			println(gras("  ✓ Cheat : ") + "  →  " + vert("" + p.argent + " €"));
 
 		}
 		println("");
@@ -507,7 +554,9 @@ class Main extends Program {
 		CookieStat c = p.cookie;
 		int quantiteVendu = c.quantite;
 		int gainParCookies = c.prix - c.matiere;
-		int benefice = gainParCookies * quantiteVendu - ( c.taxe / 100);
+		int gainBrut = gainParCookies * quantiteVendu;
+		int montantTaxe = (int)(gainBrut * (c.taxe / 100.0));
+		int benefice = gainBrut - montantTaxe;
 		int populariteDuCookie = c.popularite;
 
 		p.gainJour = benefice;
@@ -577,21 +626,21 @@ class Main extends Program {
 
 		CookieStat c = p.cookie;
 		if (c != null) {
-			data[ligne][4] = c.id;
-			data[ligne][5] = c.nom;
-			data[ligne][6] = "" + c.matiere;
-			data[ligne][7] = "" + c.prix;
-			data[ligne][8] = "" + c.taxe;
-			data[ligne][9] = "" + c.quantite;
-			data[ligne][10] = "" + c.popularite;
+			data[ligne][6] = c.id;
+			data[ligne][7] = c.nom;
+			data[ligne][8] = "" + c.matiere;
+			data[ligne][9] = "" + c.prix;
+			data[ligne][10] = "" + c.taxe;
+			data[ligne][11] = "" + c.quantite;
+			data[ligne][12] = "" + c.popularite;
 		} else {
-			data[ligne][4] = "NULL";
-			data[ligne][5] = "";
-			data[ligne][6] = "0";
-			data[ligne][7] = "0";
+			data[ligne][6] = "NULL";
+			data[ligne][7] = "";
 			data[ligne][8] = "0";
 			data[ligne][9] = "0";
 			data[ligne][10] = "0";
+			data[ligne][11] = "0";
+			data[ligne][12] = "0";
 		}
 	}
 
@@ -628,7 +677,8 @@ class Main extends Program {
 			println(cyan("Sauvegardes disponibles :"));
 			int i = 0;
 			while (i < rows) {
-				println("  " + (i + 1) + ". " + getCell(csv, i, 0) + " (Jour " + getCell(csv, i, 1) + ")");
+				String nomSave = padDroit(getCell(csv, i, 0), 20);
+				println("  " + cyan((i + 1) + ".") + " " + vert(nomSave) + " " + jaune("(Jour " + getCell(csv, i, 1) + ")"));
 				i = i + 1;
 			}
 			println("");
@@ -644,16 +694,16 @@ class Main extends Program {
 				p.quantite = entierDepuisTexte(getCell(csv, index, 4));
 				p.popularite = entierDepuisTexte(getCell(csv, index, 5));
 				
-				String cookieId = getCell(csv, index, 4);
+				String cookieId = getCell(csv, index, 6);
 				CookieStat c = new CookieStat();
 				if (!equals(cookieId, "NULL")) {
 					c.id = cookieId;
-					c.nom = getCell(csv, index, 5);
-					c.matiere = entierDepuisTexte(getCell(csv, index, 6));
-					c.prix = entierDepuisTexte(getCell(csv, index, 7));
-					c.taxe = entierDepuisTexte(getCell(csv, index, 8));
-					c.quantite = entierDepuisTexte(getCell(csv, index, 9));
-					c.popularite = entierDepuisTexte(getCell(csv, index, 10));
+					c.nom = getCell(csv, index, 7);
+					c.matiere = entierDepuisTexte(getCell(csv, index, 8));
+					c.prix = entierDepuisTexte(getCell(csv, index, 9));
+					c.taxe = entierDepuisTexte(getCell(csv, index, 10));
+					c.quantite = entierDepuisTexte(getCell(csv, index, 11));
+					c.popularite = entierDepuisTexte(getCell(csv, index, 12));
 					p.cookie = c;
 
 				} else {
@@ -992,7 +1042,17 @@ class Main extends Program {
 		effacerTerminal();
 		afficherLogo();
 		println("");
-		afficherFichierCouleur(choixCookieTxt, CYAN);
+		
+		// Affichage dynamique de l'entete
+		int tableWidth = 74;
+		String border = repeter("═", tableWidth - 2);
+		
+		println(cyan("  ╔" + border + "╗"));
+		println(cyan("  ║" + centrer("SELECTION DU PRODUIT", tableWidth - 2) + "║"));
+		println(cyan("  ╚" + border + "╝"));
+		println("");
+		println(blanc("    Choisissez le cookie qui fera la réputation de votre entreprise :"));
+
 		println("");
 		afficherListeCookies(cookies);
 		println("");
@@ -1002,7 +1062,8 @@ class Main extends Program {
 
 	// Affiche la liste des cookies avec leurs stats
 	void afficherListeCookies(CookieStat[] cookies) {
-		println(cyan("  ──────────────────────────────────────────────────"));
+		println(cyan("  ──────────────────────────────────────────────────────────────────────────"));
+		println(cyan("  N°  " + padDroit("NOM", 20) + "  " + padDroit("COUT", 8) + " " + padDroit("PRIX", 8) + " " + padDroit("TAXE", 6) + " " + padDroit("POP.", 6) + "  MARGE"));
 		int i = 0;
 		while (i < length(cookies)) {
 			afficherUnCookie(cookies[i], i + 1);
@@ -1021,7 +1082,14 @@ class Main extends Program {
 		} else {
 			numStr = "" + numero;
 		}
-		println("  " + cyan(numStr + ".") + " " + c.nom + "  " + rouge("-" + c.matiere + "\u20ac") + " " + vert("+" + c.prix + "\u20ac") + " " + jaune("-" + c.taxe + "%") + " " + cyan("*" + c.popularite + "%")  + "  \u25b6 " + couleurMarge);
+
+		String nom = padDroit(c.nom, 20);
+		String mat = padDroit("-" + c.matiere + "\u20ac", 8);
+		String prix = padDroit("+" + c.prix + "\u20ac", 8);
+		String taxe = padDroit("-" + c.taxe + "%", 6);
+		String pop = padDroit("*" + c.popularite + "%", 6);
+
+		println("  " + cyan(numStr + ".") + " " + nom + "  " + rouge(mat) + " " + vert(prix) + " " + jaune(taxe) + " " + cyan(pop)  + "  \u25b6 " + couleurMarge);
 	}
 
 	// Calcule la marge d'un cookie
@@ -1284,6 +1352,30 @@ class Main extends Program {
 		assertEquals( false , estAccepatable("n"));
 		assertEquals( false , estAccepatable("nazertyuiopqsdfghjklmqsdfghjk"));
 		assertEquals( false , estAccepatable("nrzet;rt"));
+	}
+
+	void test_padDroit() {
+		assertEquals("test      ", padDroit("test", 10));
+		assertEquals("test", padDroit("test", 4));
+		assertEquals("test", padDroit("test", 3)); // Ne tronque pas
+	}
+
+	void test_padDroitPoints() {
+		assertEquals("test......", padDroitPoints("test", 10));
+		assertEquals("test", padDroitPoints("test", 4));
+	}
+
+	void test_centrer() {
+		assertEquals("   test   ", centrer("test", 10)); // 10-4=6 => 3 espaces de chaque côté
+		assertEquals("  test   ", centrer("test", 9));   // 9-4=5  => 2 espaces à gauche, 3 à droite
+		assertEquals("test", centrer("test", 4));
+		assertEquals("test", centrer("test", 2));
+	}
+
+	void test_repeter() {
+		assertEquals("abcabc", repeter("abc", 2));
+		assertEquals("", repeter("abc", 0));
+		assertEquals("aaaaa", repeter("a", 5));
 	}
 
 	// endregion
