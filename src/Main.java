@@ -7,7 +7,7 @@ class Main extends Program {
 	final char CSV_SEPARATOR = ';';
 	final int ARGENT_DEPART = 150;
 	final int GAIN_DEPART = 30;
-	final int NB_COLONNES_SAVE = 11; // nombre de colonnes utilisées dans le fichier de sauvegarde CSV
+	final int NB_COLONNES_SAVE = 14; // nombre de colonnes utilisées dans le fichier de sauvegarde CSV
 	
 	String ressourcesPrefix = "resources/";
 	String questionsCsv;
@@ -15,11 +15,9 @@ class Main extends Program {
 	String savesCsv;
 	String logoAscii;
 	String reglesTxt;
-	String menuTxt;
 	String gameoverTxt;
 	String bonneReponseTxt;
 	String mauvaiseReponseTxt;
-	String choixCookieTxt;
 	String ecranBienvenueDir;
 
 	// ============================== COULEURS ==============================
@@ -94,17 +92,72 @@ class Main extends Program {
 		savesCsv = ressourcesPrefix + "saves.csv";
 		logoAscii = ressourcesPrefix + "cookieslandascii.txt";
 		reglesTxt = ressourcesPrefix + "regles.txt";
-		menuTxt = ressourcesPrefix + "menu.txt";
 		gameoverTxt = ressourcesPrefix + "gameover.txt";
 		bonneReponseTxt = ressourcesPrefix + "bonnereponse.txt";
 		mauvaiseReponseTxt = ressourcesPrefix + "mauvaisereponse.txt";
-		choixCookieTxt = ressourcesPrefix + "choixcookie.txt";
 		ecranBienvenueDir = ressourcesPrefix + "ecranbienvenue/";
 	}
 
 
 	// ============================== AFFICHAGE ==============================
 	//region AFFICHAGE
+
+	// Retourne une chaine d'espaces de la longueur demandee
+	String espaces(int n) {
+		return repeter(" ", n);
+	}
+
+	// Affiche une ligne vide
+	void nl() {
+		println("");
+	}
+
+	// Affiche n lignes vides
+	void nl(int n) {
+		for (int i = 0; i < n; i++) nl();
+	}
+
+	// Affiche une option de bonus formatee
+	void afficherOptionBonus(String lettre, String titre, String effet, String description) {
+		println(espaces(2) + cyan(" " + lettre + ") ") + padDroit(titre, 40) + vert(effet));
+		println(espaces(6) + jaune("> " + description));
+		nl();
+	}
+
+	// Affiche une statistique formatee avec points de suite
+	void afficherStat(String label, String valeur) {
+		println(espaces(5) + padDroitPoints(label, 35) + " " + valeur);
+	}
+
+	// Affiche une animation lors de l'activation d'un cheat
+	void afficherAnimationCheat(String message) {
+		effacerTerminal();
+		nl(5);
+		println(magenta(centrer("★ ★ ★  CHEAT CODE ACTIVE  ★ ★ ★", 80)));
+		nl();
+		println(or(centrer(message, 80)));
+		nl(5);
+		sleep(1500);
+	}
+
+	// Affiche un effet Matrix
+	void afficherEffetMatrix() {
+		effacerTerminal();
+		for (int i = 0; i < 50; i++) {
+			String ligne = "";
+			for (int j = 0; j < 80; j++) {
+				if (random() > 0.5) { 
+					ligne = ligne + vert((int)(random()*2) + ""); 
+				} else {
+					ligne = ligne + " ";
+				}
+			}
+			println(ligne);
+			sleep(50);
+		}
+		println(vert(centrer("THE COOKIE HAS YOU...", 80)));
+		sleep(2000);
+	}
 
 	// Gere l'affichage et la navigation dans le menu principal
 	void boucleMenuPrincipal() {
@@ -144,16 +197,36 @@ class Main extends Program {
 		println(magenta("Merci d'avoir teste CookiesLand !"));
 	}
 
+	// Affiche une option du menu formate
+	void afficherOption(String numero, String texte) {
+		println(cyan(espaces(4) + padDroit(numero, 6)) + gras(blanc(texte)));
+		nl();
+	}
+
 	// Affiche les options du menu principal
 	void afficherMenuPrincipal() {
-		afficherFichierCouleur(menuTxt, CYAN);
+		int w = 55;
+		String sep = repeter("─", w);
+		
+		println(magenta(espaces(4) + sep));
+		nl();
+
+		afficherOption("I.", "NOUVELLE PARTIE");
+		afficherOption("II.", "CHARGER UNE PARTIE");
+		afficherOption("III.", "RÈGLES DU JEU");
+		afficherOption("IV.", "RÉINITIALISER");
+		
+		println(magenta(espaces(4) + sep));
+		nl();
+		println(rouge(espaces(4) + padDroit("V.", 6)) + gras(rouge("QUITTER")));
+		nl();
 	}
 
 	// Affiche le logo ASCII du jeu
 	void afficherLogo() {
 		File logo = newFile(logoAscii);
 		if (ready(logo)) {
-			println("");
+			nl();
 			afficherFichierCouleur(logoAscii, GOLD);
 		} else {
 			println(or("[[[COOKIESLAND]]]"));
@@ -174,6 +247,55 @@ class Main extends Program {
 		while (ready(fichier)) {
 			println(couleur + readLine(fichier) + RESET);
 		}
+	}
+
+	// Ajoute des espaces a droite pour atteindre la taille voulue
+	String padDroit(String s, int n) {
+		String res = s;
+		while (length(res) < n) {
+			res = res + " ";
+		}
+		return res;
+	}
+
+	// Ajoute des points a droite pour atteindre la taille voulue
+	String padDroitPoints(String s, int n) {
+		String res = s;
+		while (length(res) < n) {
+			res = res + ".";
+		}
+		return res;
+	}
+
+	// Centre un texte dans une largeur donnee en comblant avec des espaces
+	String centrer(String s, int largeur) {
+		if (length(s) >= largeur) {
+			return s;
+		}
+		int espaces = largeur - length(s);
+		int gauche = espaces / 2;
+		String res = "";
+		int i = 0;
+		while (i < gauche) {
+			res = res + " ";
+			i = i + 1;
+		}
+		res = res + s;
+		while (length(res) < largeur) {
+			res = res + " ";
+		}
+		return res;
+	}
+
+	// Repete un caractere n fois
+	String repeter(String c, int n) {
+		String res = "";
+		int i = 0;
+		while (i < n) {
+			res = res + c;
+			i = i + 1;
+		}
+		return res;
 	}
 
 	// Affiche les informations du tour courant (jour, argent, stats, question)
@@ -198,39 +320,39 @@ class Main extends Program {
 		println("");
 		
 		// === BARRE DE STATUT ===
-		println(jaune("  📅 JOUR " + partie.jour));
+		println(jaune("  📅 JOUR " + partie.jour + "   |   MODE: " + partie.difficulte));
 		println(cyan("  ─────────────────────────────────────────────────────────────"));
-		println("");
+		nl();
 		
-		// === FINANCES (simple et clair) ===
+		// === FINANCES ===
 		println(gras(or("  💰 FINANCES")));
-		println("     Argent disponible ............ " + or(partie.argent + " €"));
-		println("     Gain du jour ................. " + couleurSelonSigne(partie.gainJour, indicateurGain + " " + partie.gainJour + " €"));
-		println("");
+		afficherStat("Argent disponible ", or(partie.argent + " €"));
+		afficherStat("Gain du jour ", couleurSelonSigne(partie.gainJour, indicateurGain + " " + partie.gainJour + " €"));
+		nl();
 		
-		// === COOKIE (simple et clair) ===
+		// === COOKIE ===
 		if (c != null) {
 			println(gras(magenta("  🍪 " + c.nom.toUpperCase())));
-			println("     Cout matiere premiere ........ " + rouge(c.matiere + " €"));
-			println("     Prix de vente ................ " + vert(c.prix + " €"));
-			println("     Taxe ......................... " + jaune(c.taxe + " %"));
-			println("     Quantite en stock ............ " + cyan(c.quantite + " unites"));
-			println("     Popularité ................... " + or(c.popularite + " %"));
-			println("     Marge par cookie ............. " + couleurSelonSigne(marge, indicateurMarge + " " + marge + " €"));
+			afficherStat("Cout matiere premiere ", rouge(c.matiere + " €"));
+			afficherStat("Prix de vente ", vert(c.prix + " €"));
+			afficherStat("Taxe ", jaune(c.taxe + " %"));
+			afficherStat("Quantite en stock ", cyan(c.quantite + " unites"));
+			afficherStat("Popularité ", or(c.popularite + " %"));
+			afficherStat("Marge par cookie ", couleurSelonSigne(marge, indicateurMarge + " " + marge + " €"));
 		}
-		println("");
+		nl();
 		
 		// === QUESTION ===
 		println(cyan("  ─────────────────────────────────────────────────────────────"));
 		println(gras(jaune("  ❓ QUESTION")));
 		println(cyan("  ─────────────────────────────────────────────────────────────"));
-		println("");
+		nl();
 		println(gras("     " + question.intitule));
-		println("");
-		println("     " + cyan("A)") + " " + question.propositions[0]);
-		println("     " + cyan("B)") + " " + question.propositions[1]);
-		println("     " + cyan("C)") + " " + question.propositions[2]);
-		println("     " + cyan("D)") + " " + question.propositions[3]);
+		nl();
+		println(espaces(5) + cyan("A)") + " " + question.propositions[0]);
+		println(espaces(5) + cyan("B)") + " " + question.propositions[1]);
+		println(espaces(5) + cyan("C)") + " " + question.propositions[2]);
+		println(espaces(5) + cyan("D)") + " " + question.propositions[3]);
 		print("\n\n\n\n");
 	}
 
@@ -270,11 +392,31 @@ class Main extends Program {
 	void afficherEcranResultat(boolean succes) {
 		effacerTerminal();
 		afficherLogo();
+		
+		int width = 70;
+		String top = repeter("═", width);
+		
+		println("");
 		if (succes) {
-			afficherFichierCouleur(bonneReponseTxt, GREEN);
+			println(vert("  ╔" + top + "╗"));
+			println(vert("  ║" + centrer("", width) + "║"));
+			println(vert("  ║" + centrer("O   R E P O N S E   C O R R E C T E   O", width) + "║"));
+			println(vert("  ║" + centrer("", width) + "║"));
+			println(vert("  ╚" + top + "╝"));
+			println("");
+			println(vert(centrer("Bravo ! Vous gagnez un bonus commercial.", width + 4)));
 		} else {
-			afficherFichierCouleur(mauvaiseReponseTxt, RED);
+			println(rouge("  ╔" + top + "╗"));
+			println(rouge("  ║" + centrer("", width) + "║"));
+			println(rouge("  ║" + centrer("X   M A U V A I S E   R E P O N S E   X", width) + "║"));
+			println(rouge("  ║" + centrer("", width) + "║"));
+			println(rouge("  ╚" + top + "╝"));
+			println("");
+			println(rouge(centrer("Dommage... Un malus va etre applique.", width + 4)));
 		}
+		println("");
+		println(jaune("  " + repeter("─", width + 2)));
+		println("");
 		attendreValidationUtilisateur();
 	}
 
@@ -304,15 +446,15 @@ class Main extends Program {
 	
 	// Reinitialise le fichier de sauvegardes (efface tout)
 	void initialiserSauvegardes() {
-		println("ATTENTION : Cela va effacer toutes les sauvegardes existantes.");
-		print("Etes-vous sur ? (O/N) > ");
+		println(rouge(gras("ATTENTION : Cela va effacer toutes les sauvegardes existantes.")));
+		print(blanc("Etes-vous sur ? ") + cyan("(O/N) > "));
 		String rep = readString();
 		if (equals(majuscule(rep), "O")) {
 			String[][] data = new String[0][NB_COLONNES_SAVE];
 			saveCSV(data, savesCsv, CSV_SEPARATOR);
-			println("Fichier de sauvegarde reinitialise.");
+			println(vert("Fichier de sauvegarde reinitialise."));
 		} else {
-			println("Annule.");
+			println(jaune("Annule."));
 		}
 		attendreValidationUtilisateur();
 	}
@@ -331,24 +473,65 @@ class Main extends Program {
 			println("Impossible d'initialiser la partie (aucun cookie disponible).");
 			attendreValidationUtilisateur();
 		} else {
+			Difficulte diff = afficherMenuDifficulte();
 			int choix = afficherMenuSelectionCookie(cookies);
 			if (choix > 0) {
 				Partie partie = nouvellePartieAvecCookie(cookies[choix - 1]);
+				partie.difficulte = diff;
 				boucleJeu(partie, questions, partie.cookie);
 			}
 		}
+	}
+	
+	// Choisit une question adaptee a la difficulté
+	Question choisirQuestion(Question[] questions, Difficulte diff) {
+		// Si mode NORMAL, on prend une question au hasard sans filtrer
+		if (diff == Difficulte.NORMAL) {
+			return questions[(int) (random() * length(questions))];
+		}
+
+		int maxEssais = 200;
+		int essai = 0;
+		while (essai < maxEssais) {
+			Question q = questions[(int) (random() * length(questions))];
+			// En mode "spécifique", on cherche une correspondance exacte
+			if (q.niveau == diff) {
+				return q;
+			}
+			essai = essai + 1;
+		}
+		return questions[(int) (random() * length(questions))];
 	}
 	
 	// Boucle principale du jeu : gere les tours, les questions et les evenements
 	void boucleJeu(Partie partie, Question[] questions, CookieStat cookiestat){
 		boolean jeuEnCours = true;
 		while (jeuEnCours) {
-			Question question = questions[(int) (random() * length(questions))];
+			Question question = choisirQuestion(questions, partie.difficulte);
 			String bonneReponse = melangerPropositions(question);
 			afficherEcranTour(partie, question, cookiestat);
 	
 			String reponse = demanderReponse();
-			if (equals(reponse, "Q")){
+			
+			// --- GESTION DES CHEAT CODES ---
+			if (equals(reponse, "MOTHERLODE")) {
+				partie.argent = partie.argent + 50000;
+				afficherAnimationCheat("ARGENT ILLIMITE !");
+			} else if (equals(reponse, "FEAST")) {
+				partie.quantite = partie.quantite + 500;
+				afficherAnimationCheat("PLUIE DE COOKIES !");
+			} else if (equals(reponse, "FAME")) {
+				partie.popularite = partie.popularite + 20;
+				afficherAnimationCheat("POPULARITE MAXIMALE !");
+			} else if (equals(reponse, "ROSEBUD")) {
+				partie.argent = partie.argent + 1000;
+				afficherAnimationCheat("UN PETIT CREDIT !");
+			} else if (equals(reponse, "KACHING")) {
+				partie.argent = partie.argent + 1000;
+				afficherAnimationCheat("ARGENT DE POCHE !");
+			} else if (equals(reponse, "MATRIX")) {
+				afficherEffetMatrix();
+			} else if (equals(reponse, "Q")){
 				jeuEnCours = false;
 			} else if (equals(reponse, "S")){
 				sauvegarderPartie(partie);
@@ -385,10 +568,26 @@ class Main extends Program {
 	void afficherEcranGameOver(Partie p) {
 		effacerTerminal();
 		afficherLogo();
-		afficherFichierCouleur(gameoverTxt, RED);
-		println(jaune("     Vous avez survecu ") + or("" + p.jour) + jaune(" jours."));
+		
+		int width = 70;
+		String top = repeter("═", width);
+		
 		println("");
-		println(rouge("  ═══════════════════════════════════════════════════"));
+		println(rouge("  ╔" + top + "╗"));
+		println(rouge("  ║" + centrer("", width) + "║"));
+		println(rouge("  ║" + centrer("#   G A M E   O V E R   #", width) + "║"));
+		println(rouge("  ║" + centrer("", width) + "║"));
+		println(rouge("  ╠" + top + "╣"));
+		println(rouge("  ║" + centrer("", width) + "║"));
+		println(rouge("  ║" + centrer(" VOTRE ENTREPRISE A FAIT FAILLITE ", width) + "║"));
+		println(rouge("  ║" + centrer("", width) + "║"));
+		println(rouge("  ╚" + top + "╝"));
+		println("");
+		
+		String message = "Vous avez réussi à survivre pendant " + p.jour + " jours.";
+		println(jaune(centrer(message, width + 4)));
+		println("");
+		println(rouge("  " + repeter("─", width + 2)));
 		println("");
 		attendreValidationUtilisateur();
 	}
@@ -398,28 +597,32 @@ class Main extends Program {
 		effacerTerminal();
 		afficherLogo();
 		println("");
-		println(vert("  ═══════════════════════════════════════════════════"));
-		println(vert("         🎁 CHOISISSEZ VOTRE AMELIORATION"));
-		println(vert("  ═══════════════════════════════════════════════════"));
-		println("");
-		println("  " + cyan("A)") + " Reduire cout matiere premiere " + vert("(-5%)"));
-		println("     " + jaune("→") + " Achetez moins cher vos ingredients");
-		println("");
-		println("  " + cyan("B)") + " Augmenter prix de vente " + vert("(+5%)"));
-		println("     " + jaune("→") + " Vendez vos cookies plus cher");
-		println("");
-		println("  " + cyan("C)") + " Reduire les taxes " + vert("(-1%)"));
-		println("     " + jaune("→") + " Moins d'impots a payer");
-		println("");
-		println("  " + cyan("D)") + " Augmenter la popularitée " + vert("(+3%)"));
-		println("     " + jaune("→") + " Vender plus !");
-		println("");
-		println(vert("  ───────────────────────────────────────────────────"));
+
+		int width = 70;
+		String top = repeter("═", width);
+		
+		println(vert("  ╔" + top + "╗"));
+		println(vert("  ║" + centrer("", width) + "║"));
+		println(vert("  ║" + centrer("*  BONUS COMMERCIAL ACQUIS  *", width) + "║"));
+		println(vert("  ║" + centrer("", width) + "║"));
+		println(vert("  ╠" + top + "╣"));
+		println(vert("  ║" + centrer("", width) + "║"));
+		println(vert("  ║" + centrer("Selectionnez votre recompense strategique :", width) + "║"));
+		println(vert("  ║" + centrer("", width) + "║"));
+		println(vert("  ╚" + top + "╝"));
+		nl();
+
+		afficherOptionBonus("A", "Reduire cout matiere premiere", "[-5% cout]", "Achetez moins cher vos ingredients et augmentez vos marges.");
+		afficherOptionBonus("B", "Augmenter prix de vente", "[+5% prix]", "Vendez vos cookies plus cher sans perdre de clients.");
+		afficherOptionBonus("C", "Reduire les taxes", "[-1% taxes]", "Optimisation fiscale pour payer moins d'impots.");
+		afficherOptionBonus("D", "Augmenter la popularite", "[+3% pop.]", "Lancez une campagne pub pour attirer les foules.");
+		
+		println(vert("  " + repeter("─", width + 2)));
 		
 		String choix = demanderReponseABC();
 		
 		CookieStat c = p.cookie;
-		println("");
+		nl();
 		if (equals(choix, "A")) {
 			int ancien = c.matiere;
 			c.matiere = (int)(c.matiere * 0.95);
@@ -440,7 +643,7 @@ class Main extends Program {
 		}else if( equals(choix, "motherlode")){
 			int ancien = p.argent;
 			p.argent = p.argent + 50000;
-			println(gras("  ✓ tcheat : ") + "  →  " + vert("" + p.argent + " €"));
+			println(gras("  ✓ Cheat : ") + "  →  " + vert("" + p.argent + " €"));
 
 		}
 		println("");
@@ -456,36 +659,49 @@ class Main extends Program {
 		CookieStat c = p.cookie;
 		
 		println("");
-		println(rouge("  ═══════════════════════════════════════════════════"));
-		println(gras(rouge("              ⚠  MALUS APPLIQUE  ⚠")));
-		println(rouge("  ═══════════════════════════════════════════════════"));
-		println("");
+		int width = 70;
+		String top = repeter("═", width);
+		
+		println(rouge("  ╔" + top + "╗"));
+		println(rouge("  ║" + centrer("", width) + "║"));
+		println(rouge("  ║" + centrer("!   INCIDENT DE PRODUCTION   !", width) + "║"));
+		println(rouge("  ║" + centrer("", width) + "║"));
+		println(rouge("  ╚" + top + "╝"));
+		nl();
 		
 		if (r == 0) {
 			int ancien = c.matiere;
 			c.matiere = (int)(c.matiere * 1.25);
-			println(rouge("  ✖ Cout matiere premiere augmente (+25%)"));
-			println("    " + jaune("" + ancien + " €") + "  →  " + rouge("" + c.matiere + " €"));
+			println(rouge(espaces(2) + "X Penurie d'ingredients !"));
+			println(jaune(espaces(4) + "Les prix des matieres premieres explosent."));
+			nl();
+			println(blanc(espaces(4) + "Cout matiere : ") + jaune("" + ancien + " €") + "  ->  " + rouge("" + c.matiere + " €") + rouge(" (+25%)"));
 		} else if (r == 1) {
 			int ancien = c.prix;
 			c.prix = (int)(c.prix * 0.85);
-			println(rouge("  ✖ Prix de vente reduit (-15%)"));
-			println("    " + jaune("" + ancien + " €") + "  →  " + rouge("" + c.prix + " €"));
+			println(rouge(espaces(2) + "X Guerre des prix !"));
+			println(jaune(espaces(4) + "La concurrence vous oblige a baisser vos tarifs."));
+			nl();
+			println(blanc(espaces(4) + "Prix de vente : ") + jaune("" + ancien + " €") + "  ->  " + rouge("" + c.prix + " €") + rouge(" (-15%)"));
 		} else if (r == 2){
 			int ancien = c.taxe;
 			c.taxe = (int)(c.taxe * 1.8);
-			println(rouge("  ✖ Taxes augmentees (+8%)"));
-			println("    " + jaune("" + ancien + " %") + "  →  " + rouge("" + c.taxe + " %"));
+			println(rouge(espaces(2) + "X Redressement fiscal !"));
+			println(jaune(espaces(4) + "L'administration augmente vos taxes locales."));
+			nl();
+			println(blanc(espaces(4) + "Taxes : ") + jaune("" + ancien + " %") + "  ->  " + rouge("" + c.taxe + " %") + rouge(" (+80%)"));
 		}else{
 			int ancien = c.popularite;
 			c.popularite = (int)(c.popularite / 1.4);
-			println(rouge("  ✖ Popularité perdue (-4%)"));
-			println("    " + jaune("" + ancien + " %") + "  →  " + rouge("" + c.popularite + " %"));
+			println(rouge(espaces(2) + "X Scandale sanitaire !"));
+			println(jaune(espaces(4) + "Un client a trouve un cheveu dans son cookie."));
+			nl();
+			println(blanc(espaces(4) + "Popularite : ") + jaune("" + ancien + " %") + "  ->  " + rouge("" + c.popularite + " %") + rouge(" (Baisse drastique)"));
 		}
 		
-		println("");
-		println(rouge("  ═══════════════════════════════════════════════════"));
-		println("");
+		nl();
+		println(rouge(espaces(2) + repeter("─", width + 2)));
+		nl();
 		c.quantite = c.quantite - c.popularite;
 		attendreValidationUtilisateur();
 	}
@@ -507,7 +723,9 @@ class Main extends Program {
 		CookieStat c = p.cookie;
 		int quantiteVendu = c.quantite;
 		int gainParCookies = c.prix - c.matiere;
-		int benefice = gainParCookies * quantiteVendu - ( c.taxe / 100);
+		int gainBrut = gainParCookies * quantiteVendu;
+		int montantTaxe = (int)(gainBrut * (c.taxe / 100.0));
+		int benefice = gainBrut - montantTaxe;
 		int populariteDuCookie = c.popularite;
 
 		p.gainJour = benefice;
@@ -577,32 +795,44 @@ class Main extends Program {
 
 		CookieStat c = p.cookie;
 		if (c != null) {
-			data[ligne][4] = c.id;
-			data[ligne][5] = c.nom;
-			data[ligne][6] = "" + c.matiere;
-			data[ligne][7] = "" + c.prix;
-			data[ligne][8] = "" + c.taxe;
-			data[ligne][9] = "" + c.quantite;
-			data[ligne][10] = "" + c.popularite;
+			data[ligne][6] = c.id;
+			data[ligne][7] = c.nom;
+			data[ligne][8] = "" + c.matiere;
+			data[ligne][9] = "" + c.prix;
+			data[ligne][10] = "" + c.taxe;
+			data[ligne][11] = "" + c.quantite;
+			data[ligne][12] = "" + c.popularite;
 		} else {
-			data[ligne][4] = "NULL";
-			data[ligne][5] = "";
-			data[ligne][6] = "0";
-			data[ligne][7] = "0";
+			data[ligne][6] = "NULL";
+			data[ligne][7] = "";
 			data[ligne][8] = "0";
 			data[ligne][9] = "0";
 			data[ligne][10] = "0";
+			data[ligne][11] = "0";
+			data[ligne][12] = "0";
+		}
+		
+		if (p.difficulte != null) {
+			data[ligne][13] = "" + p.difficulte;
+		} else {
+			data[ligne][13] = "MOYEN";
 		}
 	}
 
 	// Copie les donnees d'un fichier CSV vers un tableau de chaines
 	void copierDonnees(CSVFile source, String[][] dest) {
 		int rows = rowCount(source);
+		int cols = columnCount(source);
 		int i = 0;
 		while (i < rows) {
 			int j = 0;
 			while (j < NB_COLONNES_SAVE) {
-				dest[i][j] = getCell(source, i, j);
+				if (j < cols) {
+					dest[i][j] = getCell(source, i, j);
+				} else {
+					if (j == 13) dest[i][j] = "MOYEN"; // Difficulté manquante -> MOYEN
+					else dest[i][j] = "0"; // Autre -> 0
+				}
 				j = j + 1;
 			}
 			i = i + 1;
@@ -628,7 +858,8 @@ class Main extends Program {
 			println(cyan("Sauvegardes disponibles :"));
 			int i = 0;
 			while (i < rows) {
-				println("  " + (i + 1) + ". " + getCell(csv, i, 0) + " (Jour " + getCell(csv, i, 1) + ")");
+				String nomSave = padDroit(getCell(csv, i, 0), 20);
+				println("  " + cyan((i + 1) + ".") + " " + vert(nomSave) + " " + jaune("(Jour " + getCell(csv, i, 1) + ")"));
 				i = i + 1;
 			}
 			println("");
@@ -644,23 +875,30 @@ class Main extends Program {
 				p.quantite = entierDepuisTexte(getCell(csv, index, 4));
 				p.popularite = entierDepuisTexte(getCell(csv, index, 5));
 				
-				String cookieId = getCell(csv, index, 4);
+				String cookieId = getCell(csv, index, 6);
 				CookieStat c = new CookieStat();
 				if (!equals(cookieId, "NULL")) {
 					c.id = cookieId;
-					c.nom = getCell(csv, index, 5);
-					c.matiere = entierDepuisTexte(getCell(csv, index, 6));
-					c.prix = entierDepuisTexte(getCell(csv, index, 7));
-					c.taxe = entierDepuisTexte(getCell(csv, index, 8));
-					c.quantite = entierDepuisTexte(getCell(csv, index, 9));
-					c.popularite = entierDepuisTexte(getCell(csv, index, 10));
+					c.nom = getCell(csv, index, 7);
+					c.matiere = entierDepuisTexte(getCell(csv, index, 8));
+					c.prix = entierDepuisTexte(getCell(csv, index, 9));
+					c.taxe = entierDepuisTexte(getCell(csv, index, 10));
+					c.quantite = entierDepuisTexte(getCell(csv, index, 11));
+					c.popularite = entierDepuisTexte(getCell(csv, index, 12));
 					p.cookie = c;
 
 				} else {
 					p.cookie = null;
-				}			
+				}
+
+				if (columnCount(csv) >= 14) {
+					p.difficulte = niveauDepuisTexte(getCell(csv, index, 13));
+				} else {
+					p.difficulte = Difficulte.MOYEN;
+				}
+
 				Question[] questions = chargerQuestions();
-				boucleJeu(p, questions, c);
+				boucleJeu(p, questions, c); // Warning: c variable might be confusing here if p.cookie is set
 			}
 		}
 	}
@@ -687,10 +925,11 @@ class Main extends Program {
 	// Verifie si la saisie correspond a une reponse valide (A, B, C ou D)
 	boolean estReponseValide(String s) {
 		boolean valide = false;
-		if(equals(s,"motherlode")){
-			valide = true;
-			return valide; 
+		// Codes de triche
+		if(equals(majuscule(s), "MOTHERLODE") || equals(majuscule(s), "FEAST") || equals(majuscule(s), "FAME") || equals(majuscule(s), "MATRIX") || equals(majuscule(s), "ROSEBUD") || equals(majuscule(s), "KACHING")) {
+			return true;
 		}
+		
 		if (length(s) == 1) {
 			String l = majuscule(s);
 			if (equals(l, "A") || equals(l, "B") || equals(l, "C") || equals(l, "D")) {
@@ -987,22 +1226,63 @@ class Main extends Program {
 		return partie;
 	}
 
+	// Affiche le menu de selection de la difficulté
+	Difficulte afficherMenuDifficulte() {
+		effacerTerminal();
+		afficherLogo();
+		nl();
+		
+		int w = 55;
+		String sep = repeter("─", w);
+		
+		println(cyan(espaces(4) + "╔" + sep + "╗"));
+		println(cyan(espaces(4) + "║" + centrer("NIVEAU DE DIFFICULTE", w) + "║"));
+		println(cyan(espaces(4) + "╚" + sep + "╝"));
+		nl();
+		
+		afficherOption("1.", "FACILE    (Marché stable, clients dociles)");
+		afficherOption("2.", "NORMAL    (Mélange aléatoire standard)");
+		afficherOption("3.", "MOYEN     (La vraie vie d'entrepreneur)");
+		afficherOption("4.", "DIFFICILE (Crise économique permanente)");
+		
+		nl();
+		println(magenta(espaces(4) + sep));
+		nl();
+		
+		int choix = lireEntierDansIntervalle(1, 4);
+		if (choix == 1) return Difficulte.FACILE;
+		else if (choix == 2) return Difficulte.NORMAL;
+		else if (choix == 3) return Difficulte.MOYEN;
+		else return Difficulte.DIFFICILE;
+	}
+
 	// Affiche le menu de selection de cookie et retourne le choix (0 = annuler)
 	int afficherMenuSelectionCookie(CookieStat[] cookies) {
 		effacerTerminal();
 		afficherLogo();
-		println("");
-		afficherFichierCouleur(choixCookieTxt, CYAN);
-		println("");
+		nl();
+		
+		// Affichage dynamique de l'entete
+		int tableWidth = 74;
+		String border = repeter("═", tableWidth - 2);
+		
+		println(cyan("  ╔" + border + "╗"));
+		println(cyan("  ║" + centrer("SELECTION DU PRODUIT", tableWidth - 2) + "║"));
+		println(cyan("  ╚" + border + "╝"));
+		nl();
+		println(blanc(espaces(4) + "Choisissez le cookie qui fera la réputation de votre entreprise :"));
+
+		nl();
 		afficherListeCookies(cookies);
-		println("");
+		nl();
 		int choix = lireEntierDansIntervalle(0, length(cookies));
 		return choix;
 	}
 
 	// Affiche la liste des cookies avec leurs stats
 	void afficherListeCookies(CookieStat[] cookies) {
-		println(cyan("  ──────────────────────────────────────────────────"));
+		println(cyan("  ──────────────────────────────────────────────────────────────────────────"));
+		println(cyan("  N°  " + padDroit("NOM", 20) + "  " + padDroit("COUT", 8) + " " + padDroit("PRIX", 8) + " " + padDroit("TAXE", 6) + " " + padDroit("POP.", 6) + "  MARGE"));
 		int i = 0;
 		while (i < length(cookies)) {
 			afficherUnCookie(cookies[i], i + 1);
@@ -1021,7 +1301,14 @@ class Main extends Program {
 		} else {
 			numStr = "" + numero;
 		}
-		println("  " + cyan(numStr + ".") + " " + c.nom + "  " + rouge("-" + c.matiere + "\u20ac") + " " + vert("+" + c.prix + "\u20ac") + " " + jaune("-" + c.taxe + "%") + " " + cyan("*" + c.popularite + "%")  + "  \u25b6 " + couleurMarge);
+
+		String nom = padDroit(c.nom, 20);
+		String mat = padDroit("-" + c.matiere + "\u20ac", 8);
+		String prix = padDroit("+" + c.prix + "\u20ac", 8);
+		String taxe = padDroit("-" + c.taxe + "%", 6);
+		String pop = padDroit("*" + c.popularite + "%", 6);
+
+		println(espaces(2) + cyan(numStr + ".") + " " + nom + "  " + rouge(mat) + " " + vert(prix) + " " + jaune(taxe) + " " + cyan(pop)  + "  \u25b6 " + couleurMarge);
 	}
 
 	// Calcule la marge d'un cookie
@@ -1064,6 +1351,8 @@ class Main extends Program {
 	Difficulte niveauDepuisTexte(String valeur) {
 		if (equals(valeur, "FACILE")) {
 			return Difficulte.FACILE;
+		} else if (equals(valeur, "NORMAL")) {
+			return Difficulte.NORMAL;
 		} else if (equals(valeur, "MOYEN")) {
 			return Difficulte.MOYEN;
 		}
@@ -1284,6 +1573,53 @@ class Main extends Program {
 		assertEquals( false , estAccepatable("n"));
 		assertEquals( false , estAccepatable("nazertyuiopqsdfghjklmqsdfghjk"));
 		assertEquals( false , estAccepatable("nrzet;rt"));
+	}
+
+	void test_padDroit() {
+		assertEquals("test      ", padDroit("test", 10));
+		assertEquals("test", padDroit("test", 4));
+		assertEquals("test", padDroit("test", 3)); // Ne tronque pas
+	}
+
+	void test_padDroitPoints() {
+		assertEquals("test......", padDroitPoints("test", 10));
+		assertEquals("test", padDroitPoints("test", 4));
+	}
+
+	void test_centrer() {
+		assertEquals("   test   ", centrer("test", 10)); // 10-4=6 donc 3 espaces de chaque côté
+		assertEquals("  test   ", centrer("test", 9));   // 9-4=5  donc 2 espaces à gauche, 3 à droite
+		assertEquals("test", centrer("test", 4));
+		assertEquals("test", centrer("test", 2));
+	}
+
+	void test_repeter() {
+		assertEquals("abcabc", repeter("abc", 2));
+		assertEquals("", repeter("abc", 0));
+		assertEquals("aaaaa", repeter("a", 5));
+	}
+
+	void test_niveauDepuisTexte() {
+		assertTrue(Difficulte.FACILE == niveauDepuisTexte("FACILE"));
+		assertTrue(Difficulte.NORMAL == niveauDepuisTexte("NORMAL"));
+		assertTrue(Difficulte.MOYEN == niveauDepuisTexte("MOYEN"));
+		assertTrue(Difficulte.DIFFICILE == niveauDepuisTexte("DIFFICILE"));
+		assertTrue(Difficulte.DIFFICILE == niveauDepuisTexte("INCONNU"));
+	}
+
+	void test_choisirQuestion() {
+		Question q1 = new Question(); q1.niveau = Difficulte.FACILE;
+		Question q2 = new Question(); q2.niveau = Difficulte.MOYEN;
+		Question[] questions = new Question[]{q1, q2};
+
+		Question r1 = choisirQuestion(questions, Difficulte.NORMAL);
+		assertTrue(r1 == q1 || r1 == q2);
+
+		Question r2 = choisirQuestion(questions, Difficulte.FACILE);
+		assertTrue(Difficulte.FACILE == r2.niveau);
+
+		Question r3 = choisirQuestion(questions, Difficulte.MOYEN);
+		assertTrue(Difficulte.MOYEN == r3.niveau);
 	}
 
 	// endregion
