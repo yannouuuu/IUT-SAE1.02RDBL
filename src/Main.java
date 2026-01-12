@@ -828,7 +828,10 @@ class Main extends Program {
 	// Copie les donnees d'un fichier CSV vers un tableau de chaines
 	void copierDonnees(CSVFile source, String[][] dest) {
 		int rows = rowCount(source);
-		int cols = columnCount(source);
+		int cols = 0;
+		if (rows > 0) {
+			cols = columnCount(source);
+		}
 		int i = 0;
 		while (i < rows) {
 			int j = 0;
