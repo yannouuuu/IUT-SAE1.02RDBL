@@ -141,13 +141,17 @@ class Main extends Program {
 	}
 
 	// Affiche un effet Matrix
-	void afficherEffetMatrix() {
+	void afficherEffetMatrix(boolean modeCookie) {
 		effacerTerminal();
 		for (int i = 0; i < 50; i++) {
 			String ligne = "";
 			for (int j = 0; j < 80; j++) {
 				if (random() > 0.5) { 
-					ligne = ligne + vert((int)(random()*2) + ""); 
+					if (modeCookie) {
+						ligne = ligne + "🍪";
+					} else {
+						ligne = ligne + vert((int)(random()*2) + ""); 
+					}
 				} else {
 					ligne = ligne + " ";
 				}
@@ -530,7 +534,9 @@ class Main extends Program {
 				partie.argent = partie.argent + 1000;
 				afficherAnimationCheat("ARGENT DE POCHE !");
 			} else if (equals(reponse, "MATRIX")) {
-				afficherEffetMatrix();
+				afficherEffetMatrix(false);
+			} else if (equals(reponse, "COOKIEMATRIX")) {
+				afficherEffetMatrix(true);
 			} else if (equals(reponse, "Q")){
 				jeuEnCours = false;
 			} else if (equals(reponse, "S")){
@@ -926,7 +932,7 @@ class Main extends Program {
 	boolean estReponseValide(String s) {
 		boolean valide = false;
 		// Codes de triche
-		if(equals(majuscule(s), "MOTHERLODE") || equals(majuscule(s), "FEAST") || equals(majuscule(s), "FAME") || equals(majuscule(s), "MATRIX") || equals(majuscule(s), "ROSEBUD") || equals(majuscule(s), "KACHING")) {
+		if(equals(majuscule(s), "MOTHERLODE") || equals(majuscule(s), "FEAST") || equals(majuscule(s), "FAME") || equals(majuscule(s), "MATRIX") || equals(majuscule(s), "COOKIEMATRIX")|| equals(majuscule(s), "ROSEBUD") || equals(majuscule(s), "KACHING")) {
 			return true;
 		}
 		
